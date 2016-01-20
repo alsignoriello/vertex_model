@@ -1,0 +1,50 @@
+#!/usr/bin/python
+import numpy as np
+
+""" 
+
+geometry.py - geometrical formulas 
+
+author: Lexi Signoriello
+date: 1/20/16
+
+vertices - list of vertices
+* Make sure passing the list of cell vertices (NOT global list of vertices)
+(x0, y0), (x1, y1) ... (xN, yN)
+
+"""
+
+# http://stackoverflow.com/questions/451426/how-do-i-calculate-the-surface-area-of-a-2d-polygon
+def get_area(vertices):
+	edges = zip(vertices, vertices[1:] + [vertices[0]])
+	cross_product = 0
+	for ((x0, y0), (x1, y1)) in edges:
+		cross_product += ((x0 * y1) - (x1 * y0))
+	return 0.5 * abs(cross_product)
+
+
+# this may need to be adapted for periodic boundary conditions
+def get_perimeter(vertices):
+	n = len(vertices)
+	perimeter = 0
+	for i in range(0,n):
+		x0,y0 = vertices[i]
+		if i == n - 1:
+			x1,y1 = vertices[0]
+		if i != n - 1:
+			x1,y1 = vertices[1]
+		dist = get_euclidean_distance(x0, y0, x1, y1)
+		perimeter += dist
+	return perimeter
+
+def get_center():
+	pass
+
+# compute euclidean distance between (x,y) coordinates
+def get_euclidean_distance(x0, y0, x1, y1):
+	return ((x0 - x1)**2 + (y0 - y1)**2)**0.5
+	
+
+# Difference with respect to periodic boundaries
+def diff(v1,v2,L):
+	return ((v1 - v2 + L/2) % L) - L/2
