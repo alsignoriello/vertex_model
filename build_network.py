@@ -2,6 +2,7 @@
 import numpy as np
 import sys
 from Network import Network
+from parser import *
 
 """
 
@@ -23,47 +24,49 @@ parameters = {}
 
 # Side length of box in x direction
 lx = 9 * (2 / (3 * (3**0.5)))**0.5
-parameters['lx'] = lx
 
 # Side length of box in y directions
 ly = 4 * (2 / (3**0.5))**0.5
-parameters['ly'] = ly
 
 L = np.array([lx,ly])
 
-# # K - elastic coefficient
-k = 1.
-parameters['k'] = k
+# # k_a - elastic area coefficient
+k_a = 1.
+parameters['k_a'] = k_a
 
 # # A0 - prefferred area for cell
 A0 = 1.
 parameters['A0'] = A0
 
-# gamma - contraction coefficient 
-gamma = 1. 
-parameters['gamma'] = gamma
+# k_p - elastic perimeter coefficient 
+k_p = 1. 
+parameters['k_p'] = k_p
 
-# lambda - line tension between cells
+# gamma - line tension between cells
 # linear coefficient
-Lambda = 1.
-parameters['lambda'] = Lambda
+gamma = 1.
+parameters['gamma'] = gamma
 
 # delta_t - time step 
 delta_t = 0.05
 parameters['delta_t'] = delta_t
 
-
 # read in list of all vertices in network
-vertex_file = "vertices.txt"
-vertices = np.loadtxt(vertex_file)
+network_vertex_file = "network_vertices.txt"
+network_vertices = read_network_vertices(network_vertex_file)
 
+# read in cells
+cell_index_file = "cell_indices.txt"
+cells = build_cells(network_vertex_file, cell_index_file)
 
 print parameters
 
-# network = Network(L, )
+network = Network(L, network_vertices, cells, parameters)
+
+print network.get_energy_elasticity()
 
 
-
+# write network
 
 
 

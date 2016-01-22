@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-
+from energy import *
 """
 
 Network.py - Class Network to define characteristics of the
@@ -42,19 +42,33 @@ class Network:
 		self.cells = cells
 		self.n_cells = len(cells)
 		self.n_vertices = len(vertices)
-		self.energy = get_energy(self)
-
+		self.parameters = parameters
 
 	# Potential energy in the current configuration
 	# 3 forces:
-	#	Elasticity of cells
-	# 	Actin-Myosin in cytoskeleton
+	#	Elasticity of cell area 
+	# 	Actin-Myosin in cytoskeleton (perimeter)
 	#	Adhesion molecules
-	def get_energy():
-		# Elasticity iterates over all cells
+	def get_energy_elasticity(self):
+		e = E_elasticity(self.cells, self.parameters['A0'],
+						self.parameters['k_a'])
+		return e
+
+	def get_energy_contraction(self):
+		e = E_contraction(self.cells, self.parameters['k_p'])
+		return e
+
+	def get_energy_adhesion(self):
+		e = E_adhesion(self.cells, self.parameters['gamma'])
+		return e
+
+	def get_force_elasticity(self):
 		pass
 
-	def build_edge_list():
+	def get_force_actin(self):
+		pass
+
+	def get_force_adhesion(self):
 		pass
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-import sys
+from Cell import Cell
 
 """ 
 
@@ -19,21 +19,26 @@ date: 1/20/16
 
 """
 
+# elasticity 
+def E_elasticity(cells, A0, k_a):
+	e = 0
+	for cell in cells:
+		e += k_a * (cell.area - A0)**2
+	return e
 
-def get_elasticity_energy():
-	# iterate over every cell
-	pass
+# adhesion - linear term, describes line tensions
+def E_adhesion(cells, gamma):
+	e = 0
+	for cell in cells:
+		e += gamma * cell.perim
+	return e
 
 
-
-def get_adhesion_energy():
-	# iterate over every cell
-	pass
-
-
-def get_actin_energy():
-	# iterate over every edge in system
-	pass
+def E_contraction(cells, k_p):
+	e = 0
+	for cell in cells:
+		e += k_p * cell.perim**2
+	return e
 
 
 

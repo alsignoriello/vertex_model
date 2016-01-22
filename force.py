@@ -20,15 +20,15 @@ date: 1/20/16
 """
 
 
-def get_elasticity_force():
+def F_elasticity():
 	pass
 
 
-def get_adhesion_force():
+def F_adhesion():
 	pass
 
 
-def get_actin_force():
+def F_actin():
 	pass
 
 
