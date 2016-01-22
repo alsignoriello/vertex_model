@@ -1,42 +1,70 @@
 #!/usr/bin/python
 import numpy as np
 import sys
+from Network import Network
 
 """
 
 build_network.py - initializes the vertex model
 
-Constructs Class Network to describe current configuration
+Builds Class Network to describe current configuration
 
-Constructs Class Cell for every polygon in the system
 
 author: Lexi Signoriello
-date: 1/20/16
+date: 	1/20/16
 
 
 """
 
-# # Number of cells
-# N=$1
 
-# # Side length of box in x direction
-# lx=$2
+''' set initial parameters ''' 
+# store parameters in dictionary
+parameters = {}
 
-# # Side length of box in y directions
-# ly=$3
+# Side length of box in x direction
+lx = 9 * (2 / (3 * (3**0.5)))**0.5
+parameters['lx'] = lx
 
-# # # Parameters
-# # K_alpha - elastic coefficient
-# K_alpha=$4
+# Side length of box in y directions
+ly = 4 * (2 / (3**0.5))**0.5
+parameters['ly'] = ly
+
+L = np.array([lx,ly])
+
+# # K - elastic coefficient
+k = 1.
+parameters['k'] = k
 
 # # A0 - prefferred area for cell
-# A0=$5
+A0 = 1.
+parameters['A0'] = A0
 
-# # gamma - contraction coefficient 
-# gamma=$6
+# gamma - contraction coefficient 
+gamma = 1. 
+parameters['gamma'] = gamma
 
-# # lambda - line tension between cells
-# lambda=$7
+# lambda - line tension between cells
+# linear coefficient
+Lambda = 1.
+parameters['lambda'] = Lambda
 
-# # delta_t - change in time
-# delta_t=$8
+# delta_t - time step 
+delta_t = 0.05
+parameters['delta_t'] = delta_t
+
+
+# read in list of all vertices in network
+vertex_file = "vertices.txt"
+vertices = np.loadtxt(vertex_file)
+
+
+print parameters
+
+# network = Network(L, )
+
+
+
+
+
+
+

@@ -22,14 +22,11 @@ ly - side length in y direction of surrounding box
 cells - list of Cells 
 n_cells - number of cells in network
 
-
 energy - potential energy in the system
 
 forces - forces in system contribute to movement
 
-
-K_alpha
-A_alpha
+parameters - dictionary containing relevant parameter values
 
 
 """
@@ -38,7 +35,7 @@ A_alpha
 class Network:
 
 
-	def __init__(self, L, vertices, cells):
+	def __init__(self, L, vertices, cells, parameters):
 		self.lx = L[0]
 		self.ly = L[1]
 		self.vertices = vertices
@@ -55,7 +52,9 @@ class Network:
 	#	Adhesion molecules
 	def get_energy():
 		# Elasticity iterates over all cells
+		pass
 
+	def build_edge_list():
 		pass
 
 

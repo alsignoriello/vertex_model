@@ -37,8 +37,10 @@ def get_perimeter(vertices):
 		perimeter += dist
 	return perimeter
 
-def get_center():
-	pass
+def get_center(vertices):
+	x = 0
+	y = 0
+	return x,y
 
 # compute euclidean distance between (x,y) coordinates
 def get_euclidean_distance(x0, y0, x1, y1):
