@@ -65,16 +65,16 @@ network_vertices = read_network_vertices(network_vertex_file)
 
 # read in cells
 cell_index_file = "cell_indices.txt"
-cells = build_cells(network_vertex_file, cell_index_file)
+cells = build_cells(network_vertex_file, cell_index_file, L)
 print "There are %d cells\n" % (len(cells))
 
 print parameters
 
 network = Network(L, network_vertices, cells, parameters)
 
-print network.get_energy()
+energy = network.get_energy()
 
-print network.get_forces()
+forces =  network.get_forces()
 
 
 

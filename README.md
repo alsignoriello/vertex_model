@@ -11,3 +11,6 @@ Simulations compute the energy and forces in the system using the following equa
 ![](https://github.com/alsignoriello/vertex_model/blob/master/images/force_equation.png "Force Equation")
 
 
+The parameters for the simulation can be found in build_network.py
+
+

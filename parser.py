@@ -52,12 +52,12 @@ def read_cell_indices(file):
 	indices = np.loadtxt(file, dtype=int)
 	return indices
 
-def build_cells(vertex_file, index_file):
+def build_cells(vertex_file, index_file, L):
 	cells = []
 	network_vertices = read_network_vertices(vertex_file)
 	cell_indices = read_cell_indices(index_file)
 	for i,indices in enumerate(cell_indices):
-		cell = Cell(i, network_vertices, indices)
+		cell = Cell(i, network_vertices, indices, L)
 		cells.append(cell)
 	return cells
 

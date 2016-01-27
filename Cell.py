@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from geometry import get_area, get_perimeter, get_center
+from geometry import *
 
 """ 
 
@@ -24,13 +24,17 @@ n_sides - 	number of sides in polygon for given cell
 
 x, y - geometric center
 
+L - length of box
+	* used to compute periodic boundary conditions
+
 """
 
 
 class Cell:
 
-	def __init__(self, id, vertices, indices):
+	def __init__(self, id, vertices, indices, L):
 		self.id = id
+		self.L = L
 		self.vertices = vertices
 		self.indices = indices
 		self.n_sides = len(indices)
@@ -40,11 +44,23 @@ class Cell:
 		# self.neighbor_list =
 
 
+	# return list of vertices
+	# with periodic boundaries 
 	def get_cell_vertices(self):
+		indices = self.indices
 		vertices = self.vertices
 		cell_vertices = []
-		for index in self.indices:
-			x,y = vertices[index]
+		L = self.L
+
+		# align everything to first vertex
+		x0,y0 = vertices[indices[0]]
+		v0 = np.array((x0,y0))
+
+		for i in indices:
+			x,y = vertices[i]
+			v = np.array((x,y))
+			v_next = v0 + periodic_diff(v, v0, L)
+			x,y = v_next
 			cell_vertices.append((x,y))
 		return cell_vertices
 
