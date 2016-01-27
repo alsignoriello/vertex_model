@@ -38,9 +38,9 @@ class Cell:
 		self.vertices = vertices
 		self.indices = indices
 		self.n_sides = len(indices)
-		self.x, self.y = get_center(self.get_cell_vertices())
-		self.area = get_area(self.get_cell_vertices())
-		self.perim = get_perimeter(self.get_cell_vertices())
+		# self.x, self.y = get_center(self.get_cell_vertices())
+		# self.area = get_area(self.get_cell_vertices())
+		# self.perim = get_perimeter(self.get_cell_vertices())
 		# self.neighbor_list =
 
 
@@ -63,6 +63,23 @@ class Cell:
 			x,y = v_next
 			cell_vertices.append((x,y))
 		return cell_vertices
+
+
+	def update_vertices(self, vertices):
+		self.vertices = vertices
+		return
+
+	def get_area(self):
+		a = area(self.get_cell_vertices())
+		return a 
+
+	def get_perim(self):
+		p = perimeter(self.get_cell_vertices())
+		return p
+
+	def get_center(self):
+		x,y = center(self.get_cell_vertices())
+		return x,y
 
 
 	def get_neighbor_list(self):

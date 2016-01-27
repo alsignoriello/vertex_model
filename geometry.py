@@ -18,7 +18,7 @@ vertices - list of vertices
 
 
 ''' Geometric Center of Polygon '''
-def get_center(vertices):
+def center(vertices):
 	n = len(vertices)
 	sumX = 0
 	sumY = 0
@@ -36,7 +36,7 @@ def get_center(vertices):
 
 
 # http://stackoverflow.com/questions/451426/how-do-i-calculate-the-surface-area-of-a-2d-polygon
-def get_area(vertices):
+def area(vertices):
 	edges = zip(vertices, vertices[1:] + [vertices[0]])
 	cross_product = 0
 	for ((x0, y0), (x1, y1)) in edges:
@@ -45,7 +45,7 @@ def get_area(vertices):
 
 
 # this may need to be adapted for periodic boundary conditions
-def get_perimeter(vertices):
+def perimeter(vertices):
 	n = len(vertices)
 	perimeter = 0
 	for i in range(0,n):
@@ -54,13 +54,13 @@ def get_perimeter(vertices):
 			x1,y1 = vertices[0]
 		if i != n - 1:
 			x1,y1 = vertices[1]
-		dist = get_euclidean_distance(x0, y0, x1, y1)
+		dist = euclidean_distance(x0, y0, x1, y1)
 		perimeter += dist
 	return perimeter
 
 
 # compute euclidean distance between (x,y) coordinates
-def get_euclidean_distance(x0, y0, x1, y1):
+def euclidean_distance(x0, y0, x1, y1):
 	return ((x0 - x1)**2 + (y0 - y1)**2)**0.5
 	
 

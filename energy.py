@@ -20,7 +20,7 @@ date: 1/20/16
 def E_elasticity(cells, A0, ka):
 	e = 0.
 	for cell in cells:
-		e += ka * (cell.area - A0)**2
+		e += ka * (cell.get_area() - A0)**2
 	return e
 
 
@@ -29,11 +29,8 @@ def E_elasticity(cells, A0, ka):
 def E_tension(cells, P0, kp):
 	e = 0.
 	for cell in cells:
-		e += kp * (cell.perim - P0)**2
+		e += kp * (cell.get_perim() - P0)**2
 	return e
-
-
-
 
 
 

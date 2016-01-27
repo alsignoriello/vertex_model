@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy as np
-import sys
+from geometry import periodic_diff
+
 
 """
 
@@ -14,7 +15,7 @@ date: 1/20/16
 """
 
 
-def get_clockwise(index, indices, vertices):
+def get_clockwise(index, indices, vertices, L):
 	
 	# get position of vertex in list
 	pos = [i for i,x in enumerate(indices) if x == index]
@@ -28,11 +29,16 @@ def get_clockwise(index, indices, vertices):
 	if pos != len(indices) - 1:
 		pos += 1
 
-	return vertices[indices[pos]]
+	# compute vertex wrt periodic boundaries
+	v0 = vertices[index]
+	v = vertices[indices[pos]]
+	vc = v0 + periodic_diff(v, v0, L)
+
+	return vc 
 
 
 
-def get_counter_clockwise(index, indices, vertices):
+def get_counter_clockwise(index, indices, vertices, L):
 		
 	# get position of vertex in list
 	pos = [i for i,x in enumerate(indices) if x == index]
@@ -46,11 +52,15 @@ def get_counter_clockwise(index, indices, vertices):
 	if pos != 0:
 		pos -= 1
 
-	return vertices[indices[pos]]
+	v0 = vertices[index]
+	v = vertices[indices[pos]]
+	vcc = v0 + periodic_diff(v, v0, L)
+
+	return vcc
 
 
 # Force on vertex due to elasticity
-def F_elasticity(cells, A0, ka, vertices):
+def F_elasticity(cells, A0, ka, vertices, L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -66,13 +76,13 @@ def F_elasticity(cells, A0, ka, vertices):
 			# compute force contributed from this cell
 			if i in cell.indices:
 				# force contributed from this cell stored in f
-				f = 2. * ka * (A0 - cell.area)
+				f = 2. * ka * (A0 - cell.get_area())
 
 				# get clockwise vector
-				vc = get_clockwise(i, cell.indices, vertices)
+				vc = get_clockwise(i, cell.indices, vertices, L)
 
 				# get counter-clockwise vector
-				vcc = np.zeros(2)
+				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
 
 				# get the difference vector
 				diff = vc - vcc
@@ -97,7 +107,7 @@ def F_elasticity(cells, A0, ka, vertices):
 
 
 # Force on vertex due to line tension
-def F_tension(cells, P0, kp, vertices):
+def F_tension(cells, P0, kp, vertices, L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -113,13 +123,13 @@ def F_tension(cells, P0, kp, vertices):
 			# compute force contributed from this cell
 			if i in cell.indices:
 				# force contributed from this cell stored in f
-				f = 2. * kp * (P0 - cell.perim)
+				f = 2. * kp * (P0 - cell.get_perim())
 
 				# get clockwise vector
-				vc = get_clockwise(i, cell.indices, vertices)
+				vc = get_clockwise(i, cell.indices, vertices, L)
 
 				# get counter-clockwise vector
-				vcc = np.zeros(2)
+				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
 
 				# get the difference vector
 				diff = vc - vcc

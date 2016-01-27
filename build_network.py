@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from Network import Network
 from parser import *
+from steepest_descent import steepest_descent
 
 """
 
@@ -29,6 +30,7 @@ lx = 9 * (2 / (3 * (3**0.5)))**0.5
 ly = 4 * (2 / (3**0.5))**0.5
 
 L = np.array([lx,ly])
+parameters['L'] = L
 
 # # ka - elastic area coefficient
 ka = 1.
@@ -47,7 +49,7 @@ parameters['kp'] = kp
 
 #  P0 - preferred perimeter for cell
 # This will be a list later
-P0 = 10.
+P0 = 5.
 parameters['P0'] = P0
 
 # # gamma - line tension between cells
@@ -73,12 +75,18 @@ print parameters
 network = Network(L, network_vertices, cells, parameters)
 
 energy = network.get_energy()
+print energy
 
 forces =  network.get_forces()
+print forces
+
+# steepest descent
+epsilon = 10**-6
+
+time, energy = steepest_descent(network, cells, delta_t, epsilon)
 
 
-
-# write network
+# plot network
 
 
 
