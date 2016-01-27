@@ -31,15 +31,17 @@ class Cell:
 
 	def __init__(self, id, vertices, indices):
 		self.id = id
+		self.vertices = vertices
 		self.indices = indices
 		self.n_sides = len(indices)
-		self.x, self.y = get_center(self.get_cell_vertices(vertices))
-		self.area = get_area(self.get_cell_vertices(vertices))
-		self.perim = get_perimeter(self.get_cell_vertices(vertices))
+		self.x, self.y = get_center(self.get_cell_vertices())
+		self.area = get_area(self.get_cell_vertices())
+		self.perim = get_perimeter(self.get_cell_vertices())
 		# self.neighbor_list =
 
 
-	def get_cell_vertices(self,vertices):
+	def get_cell_vertices(self):
+		vertices = self.vertices
 		cell_vertices = []
 		for index in self.indices:
 			x,y = vertices[index]
@@ -47,5 +49,5 @@ class Cell:
 		return cell_vertices
 
 
-	def get_neighbor_list():
+	def get_neighbor_list(self):
 		pass

@@ -11,34 +11,46 @@ in the current configuration of vertex model
 author: Lexi Signoriello
 date: 1/20/16
 
-3 components of energy:
-	Elasticity
-	Adhesion 
-	Actin-myosin cytoskeleton
 
 
 """
 
-# elasticity 
-def E_elasticity(cells, A0, k_a):
-	e = 0
-	for cell in cells:
-		e += k_a * (cell.area - A0)**2
-	return e
 
-# adhesion - linear term, describes line tensions
-def E_adhesion(cells, gamma):
-	e = 0
+# Energy due to elasticity
+def E_elasticity(cells, A0, ka):
+	e = 0.
 	for cell in cells:
-		e += gamma * cell.perim
+		e += ka * (cell.area - A0)**2
 	return e
 
 
-def E_contraction(cells, k_p):
-	e = 0
+
+# Energy due to line tension & maintaing surface area
+def E_tension(cells, P0, kp):
+	e = 0.
 	for cell in cells:
-		e += k_p * cell.perim**2
+		e += kp * (cell.perim - P0)**2
 	return e
+
+
+
+
+
+
+
+# # adhesion - linear term, describes line tensions
+# def E_adhesion(cells, gamma):
+# 	e = 0
+# 	for cell in cells:
+# 		e += gamma * cell.perim
+# 	return e
+
+
+# def E_contraction(cells, k_p):
+# 	e = 0
+# 	for cell in cells:
+# 		e += k_p * cell.perim**2
+# 	return e
 
 
 

@@ -49,7 +49,7 @@ def read_cell_vertices(file):
 	return
 
 def read_cell_indices(file):
-	indices = np.loadtxt(file)
+	indices = np.loadtxt(file, dtype=int)
 	return indices
 
 def build_cells(vertex_file, index_file):
@@ -64,7 +64,8 @@ def build_cells(vertex_file, index_file):
 def write_cells(cells, file):
 	f = open(file,"w+")
 	for cell in cells:
-		f.write("%f\t%f\t%f\t%f\n" % (cell.x, cell.y, cell.area, cell.perim))
+		f.write("%f\t%f\t%f\t%f\n" % (cell.x, cell.y, 
+									cell.area, cell.perim))
 	f.close()
 	return
 
@@ -95,79 +96,5 @@ def read_network_vertices(file):
 def write_network_vertices(vertices, file):
 	np.savetxt(file, vertices)
 	return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# may be repeated information....
-
-# def build_network edges(vertex_file, index_file):
-# 	vertices = read_network_vertices(vertex_file)
-# 	edge_indices = np.loadtxt(index_file)
-# 	edges = []
-# 	for i,indices in enumerate(edge_indices):
-# 		# edge 1
-
-# 		# edge 2 
-
-# 		# edge 3
-
-# 		# check if edge already exists
-
-# 		# remove if already there
-
-# 	return edges
-
-# def read_network_edges(file):
-# 	edges = []
-# 	f = open(file, "r")
-# 	for line in f:
-# 		linesplit = line.split("\t")
-# 		x0 = float(linesplit[0])
-# 		y0 = float(linesplit[1])
-# 		x1 = float(linesplit[2])
-# 		y1 = float(linesplit[3])
-# 		edges.append([x0,y0,x1,y1])
-# 	return edges
-
-
-# def write_network_edges(edges, file):
-# 	f = open(file, "w+")
-# 	for edge in edges:
-# 		x0,y0,x1,y1 = edge
-# 		f.write("%f\t%f\t%f\t%f\n" %
-# 					(x0,y0,x1,y1))
-# 	return
-
-
-
-
-
-
-
-
 
 

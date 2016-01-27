@@ -30,22 +30,30 @@ ly = 4 * (2 / (3**0.5))**0.5
 
 L = np.array([lx,ly])
 
-# # k_a - elastic area coefficient
-k_a = 1.
-parameters['k_a'] = k_a
+# # ka - elastic area coefficient
+ka = 1.
+parameters['ka'] = ka
 
-# # A0 - prefferred area for cell
+# # A0 - preferred area for cell
+# This will be a list later
 A0 = 1.
 parameters['A0'] = A0
 
-# k_p - elastic perimeter coefficient 
-k_p = 1. 
-parameters['k_p'] = k_p
+# kp - coefficient for line tension and 
+# 		maintaining surface area
+kp = 1. 
+parameters['kp'] = kp
 
-# gamma - line tension between cells
-# linear coefficient
-gamma = 1.
-parameters['gamma'] = gamma
+
+#  P0 - preferred perimeter for cell
+# This will be a list later
+P0 = 10.
+parameters['P0'] = P0
+
+# # gamma - line tension between cells
+# # linear coefficient
+# gamma = 1.
+# parameters['gamma'] = gamma
 
 # delta_t - time step 
 delta_t = 0.05
@@ -58,12 +66,16 @@ network_vertices = read_network_vertices(network_vertex_file)
 # read in cells
 cell_index_file = "cell_indices.txt"
 cells = build_cells(network_vertex_file, cell_index_file)
+print "There are %d cells\n" % (len(cells))
 
 print parameters
 
 network = Network(L, network_vertices, cells, parameters)
 
-print network.get_energy_elasticity()
+print network.get_energy()
+
+print network.get_forces()
+
 
 
 # write network

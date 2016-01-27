@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import numpy as np
 from energy import *
+from force import *
+
 """
 
 Network.py - Class Network to define characteristics of the
@@ -44,31 +46,45 @@ class Network:
 		self.n_vertices = len(vertices)
 		self.parameters = parameters
 
-	# Potential energy in the current configuration
-	# 3 forces:
-	#	Elasticity of cell area 
-	# 	Actin-Myosin in cytoskeleton (perimeter)
-	#	Adhesion molecules
-	def get_energy_elasticity(self):
-		e = E_elasticity(self.cells, self.parameters['A0'],
-						self.parameters['k_a'])
-		return e
 
-	def get_energy_contraction(self):
-		e = E_contraction(self.cells, self.parameters['k_p'])
-		return e
 
-	def get_energy_adhesion(self):
-		e = E_adhesion(self.cells, self.parameters['gamma'])
-		return e
+	# Potential Energy
+	# ka(A - A0)^2 + kp(P - P0)
+	def get_energy(self):
+		cells = self.cells 
 
-	def get_force_elasticity(self):
-		pass
+		A0 = self.parameters['A0']
+		ka = self.parameters['ka']
+		e1 = E_elasticity(cells, A0, ka)
 
-	def get_force_actin(self):
-		pass
+		P0 = self.parameters['P0']
+		kp = self.parameters['kp']
+		e2 = E_tension(cells, P0, kp)
 
-	def get_force_adhesion(self):
+		print "Current Energy: %f\n" % (e1 + e2)
+		return e1 + e2
+
+	# forces on vertices
+	# - derivative of energy wrt vertices
+	# list of force vectors corresponding to every vertex
+	# in the system
+	def get_forces(self):
+		cells = self.cells
+		vertices = self.vertices
+
+		A0 = self.parameters['A0']
+		ka = self.parameters['ka']
+		f1 = F_elasticity(cells, A0, ka, vertices)
+
+		P0 = self.parameters['P0']
+		kp = self.parameters['kp']
+		f2 = F_tension(cells, P0, kp, vertices)
+
+		return -(f1 + f2)
+
+
+	# move vertices wrt forces 
+	def move_vertices(self):
 		pass
 
 
