@@ -7,4 +7,8 @@ Simulations compute the energy and forces in the system using the following equa
 
 ![][energy]
 
-[energy]: https://github.com/alsignoriello/vertex_model/blob/master/images/energy_eq
+<!-- ![][force] -->
+
+![energy](https://github.com/alsignoriello/vertex_model/blob/master/images/force_equation.png "Energy Equation")
+
+
