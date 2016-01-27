@@ -5,10 +5,10 @@ The vertex model uses polygons, composed of vertices and edges, to illustrate th
 
 Simulations compute the energy and forces in the system using the following equations:
 
-![][energy]
+<!-- ![][energy] -->
 
 <!-- ![][force] -->
 
-![energy](https://github.com/alsignoriello/vertex_model/blob/master/images/force_equation.png "Energy Equation")
+![](https://github.com/alsignoriello/vertex_model/blob/master/images/force_equation.png "Force Equation")
 
 
