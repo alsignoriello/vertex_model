@@ -1,15 +1,20 @@
 # vertex_model
 
-The model is described in this paper:
-http://www.sciencedirect.com/science/article/pii/S0960982207023342
 
+The vertex model uses polygons, composed of vertices and edges, to illustrate the mechanics in formation of polygon sheets. This model has successfully been applied to fly wings and eyes in 2D. We are using this model to study the development of melanoma tumors and are extending the model to 3D. 
 
-periodic boundary conditons
+Simulations compute the energy and forces in the system using the following equations:
 
-N_c cells
-N_v vertices
+$U(R_{i}) = \sum_{\alpha} ka(A_{\alpha} - A_{0})^{2} + kp(P_{\alpha})
 
-The Energy function is defined as 
-markdown math function?
+$F = - \frac{\partial U}{\partial R} $
+
+where \\
+$\alpha$ iterates overy every cell
+$A_{0}$ is the preferred area
+$P_{0}$ is the preferred perimeter
+$k_{a}$ is the elasticity coefficient
+$k_{p}$ is the surface tension coefficient
+
 
 
