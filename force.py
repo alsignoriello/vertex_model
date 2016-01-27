@@ -66,7 +66,7 @@ def F_elasticity(cells, A0, ka, vertices):
 			# compute force contributed from this cell
 			if i in cell.indices:
 				# force contributed from this cell stored in f
-				f = ka * (A0 - cell.area)
+				f = 2. * ka * (A0 - cell.area)
 
 				# get clockwise vector
 				vc = get_clockwise(i, cell.indices, vertices)
@@ -91,11 +91,50 @@ def F_elasticity(cells, A0, ka, vertices):
 				forces[i,:] +=  f
 
 
-	return 0.
+	return forces
 
 
 
 
 # Force on vertex due to line tension
 def F_tension(cells, P0, kp, vertices):
-	return 0.
+	n_vertices = len(vertices)
+
+	# evert vertex has an associated force
+	forces = np.zeros((n_vertices, 2))
+
+	# iterate over vertices and get force
+	for i,vertex in enumerate(vertices):
+
+		# find cells with this vertex
+		for cell in cells:
+
+			# if this vertex is in current cell
+			# compute force contributed from this cell
+			if i in cell.indices:
+				# force contributed from this cell stored in f
+				f = 2. * kp * (P0 - cell.perim)
+
+				# get clockwise vector
+				vc = get_clockwise(i, cell.indices, vertices)
+
+				# get counter-clockwise vector
+				vcc = np.zeros(2)
+
+				# get the difference vector
+				diff = vc - vcc
+
+				# compute perpendicular vector
+				# assure correct direction (pointing towards vertex)
+				perp_matrix = np.zeros((2,2))
+				perp_matrix[0,1] = 1.
+				perp_matrix[1,0] = -1.
+
+				f *= np.dot(perp_matrix, diff)
+
+				# move to midpoint of difference vector
+				f *= 0.5
+
+				forces[i,:] +=  f
+
+	return forces
