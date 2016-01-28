@@ -38,28 +38,24 @@ class Network:
 
 
 	def __init__(self, L, vertices, cells, parameters):
-		self.lx = L[0]
-		self.ly = L[1]
+		self.L = L
 		self.vertices = vertices
 		self.cells = cells
-		self.n_cells = len(cells)
-		self.n_vertices = len(vertices)
 		self.parameters = parameters
-
 
 
 	# Potential Energy
 	# ka(A - A0)^2 + kp(P - P0)^2
 	def get_energy(self):
 		cells = self.cells 
+		vertices = self.vertices
+		L = self.L
 
-		A0 = self.parameters['A0']
 		ka = self.parameters['ka']
-		e1 = E_elasticity(cells, A0, ka)
+		e1 = E_elasticity(vertices, cells, ka, L)
 
-		P0 = self.parameters['P0']
 		kp = self.parameters['kp']
-		e2 = E_tension(cells, P0, kp)
+		e2 = E_tension(vertices, cells, kp, L)
 		# don't double count edges between cells
 		e2 = e2 / 2.
 
@@ -73,29 +69,27 @@ class Network:
 	def get_forces(self):
 		cells = self.cells
 		vertices = self.vertices
-		L = self.parameters['L']
+		L = self.L
 
-		A0 = self.parameters['A0']
 		ka = self.parameters['ka']
-		f1 = F_elasticity(cells, A0, ka, vertices, L)
+		f1 = F_elasticity(cells, ka, vertices, L)
 
-		P0 = self.parameters['P0']
 		kp = self.parameters['kp']
-		f2 = F_tension(cells, P0, kp, vertices, L)
+		f2 = F_tension(cells, kp, vertices, L)
 
-		return -(f1)#+ f2)
+		return -(f1 + f2)
 
 
-	# move vertices wrt forces 
+	# # move vertices wrt forces 
 	def move_vertices(self, f):
 		delta_t = self.parameters['delta_t']
 		vertices = self.vertices
 		self.vertices = vertices + delta_t * f
-		return self.vertices
+		return 
 
-	def update_cells(self, cells):
-		self.cells = cells
-		return
+
+
+
 
 
 

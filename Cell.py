@@ -32,31 +32,29 @@ L - length of box
 
 class Cell:
 
-	def __init__(self, id, vertices, indices, L):
+	def __init__(self, id, indices, A0, P0):
 		self.id = id
-		self.L = L
-		self.vertices = vertices
 		self.indices = indices
-		self.n_sides = len(indices)
-		# self.x, self.y = get_center(self.get_cell_vertices())
-		# self.area = get_area(self.get_cell_vertices())
-		# self.perim = get_perimeter(self.get_cell_vertices())
-		# self.neighbor_list =
+		self.A0 = A0
+		self.P0 = P0
 
 
 	# return list of vertices
 	# with periodic boundaries 
-	def get_cell_vertices(self):
+	def get_cell_vertices(self, vertices, L):
 		indices = self.indices
-		vertices = self.vertices
+		nsides = len(indices)
+
+		# array of x,y vertices in counter-clockwise order
+		# moving vertices to maintain periodic boundaries
 		cell_vertices = []
-		L = self.L
 
 		# align everything to first vertex
 		x0,y0 = vertices[indices[0]]
 		v0 = np.array((x0,y0))
 
 		for i in indices:
+			# print vertices 
 			x,y = vertices[i]
 			v = np.array((x,y))
 			v_next = v0 + periodic_diff(v, v0, L)
@@ -64,22 +62,24 @@ class Cell:
 			cell_vertices.append((x,y))
 		return cell_vertices
 
-
-	def update_vertices(self, vertices):
-		self.vertices = vertices
-		return
-
-	def get_area(self):
-		a = area(self.get_cell_vertices())
+	def get_area(self, vertices, L):
+		cell_vertices = self.get_cell_vertices(vertices, L)
+		a = area(cell_vertices)
+		# print a
 		return a 
 
-	def get_perim(self):
-		p = perimeter(self.get_cell_vertices())
+	def get_perim(self, vertices, L):
+		cell_vertices = self.get_cell_vertices(vertices, L)
+		p = perimeter(cell_vertices)
 		return p
 
-	def get_center(self):
-		x,y = center(self.get_cell_vertices())
+	def get_center(self, vertices, L):
+		x,y = center(self.get_cell_vertices(vertices, L))
 		return x,y
+
+	# occurs during a T1 transition
+	def update_indices(self):
+		pass
 
 
 	def get_neighbor_list(self):

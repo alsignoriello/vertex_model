@@ -60,7 +60,7 @@ def get_counter_clockwise(index, indices, vertices, L):
 
 
 # Force on vertex due to elasticity
-def F_elasticity(cells, A0, ka, vertices, L):
+def F_elasticity(cells, ka, vertices, L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -76,7 +76,7 @@ def F_elasticity(cells, A0, ka, vertices, L):
 			# compute force contributed from this cell
 			if i in cell.indices:
 				# force contributed from this cell stored in f
-				f = 2. * ka * (A0 - cell.get_area())
+				f = 2. * ka * (cell.A0 - cell.get_area(vertices, L))
 
 				# get clockwise vector
 				vc = get_clockwise(i, cell.indices, vertices, L)
@@ -98,7 +98,7 @@ def F_elasticity(cells, A0, ka, vertices, L):
 				# move to midpoint of difference vector
 				f *= 0.5
 
-				forces[i,:] +=  f
+				forces[i,:] -=  f
 
 
 	return forces
@@ -107,7 +107,7 @@ def F_elasticity(cells, A0, ka, vertices, L):
 
 
 # Force on vertex due to line tension
-def F_tension(cells, P0, kp, vertices, L):
+def F_tension(cells, kp, vertices, L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -123,7 +123,7 @@ def F_tension(cells, P0, kp, vertices, L):
 			# compute force contributed from this cell
 			if i in cell.indices:
 				# force contributed from this cell stored in f
-				f = 2. * kp * (P0 - cell.get_perim())
+				f = 2. * kp * (cell.P0 - cell.get_perim(vertices, L))
 
 				# get clockwise vector
 				vc = get_clockwise(i, cell.indices, vertices, L)
@@ -145,6 +145,6 @@ def F_tension(cells, P0, kp, vertices, L):
 				# move to midpoint of difference vector
 				f *= 0.5
 
-				forces[i,:] +=  f
+				forces[i,:] -=  f
 
 	return forces

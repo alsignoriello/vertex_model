@@ -3,7 +3,7 @@ import numpy as np
 from Network import Network
 from parser import build_cells
 
-def steepest_descent(network, cells, delta_t, epsilon):
+def steepest_descent(network, delta_t, epsilon):
 
 	# keep track of time steps
 	time = []
@@ -25,14 +25,7 @@ def steepest_descent(network, cells, delta_t, epsilon):
 		# move vertices with forces
 		vertices = network.move_vertices(f)
 
-		# update network vertices in cells
-		for cell in cells:
-			cell.update_vertices(vertices)
-
-		# update cells in network
-		network.update_cells(cells)
-
-		print t, e, np.sum(f)
+		print t, e, np.sum(f**2)**(0.5)
 		t += delta_t
 
 	return t, energy

@@ -24,7 +24,7 @@ def center(vertices):
 	sumY = 0
 	# sum the vectors
 	for i in range(0,n):
-		x,y = vertices[i]
+		x,y = vertices[i,:]
 		sumX += x
 		sumY += y
 

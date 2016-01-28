@@ -40,24 +40,14 @@ def read_cells(cell_file):
 	f.close()
 	return xs, ys, areas, perims
 
-def read_cell_vertices(file):
-	f = open(file, "r")
-	for i,line in f:
-		vertices = line.strip().split("\t")
-		vertices = [float(vertex) for vertex in vertices]
-	f.close()
-	return
-
 def read_cell_indices(file):
 	indices = np.loadtxt(file, dtype=int)
 	return indices
 
-def build_cells(vertex_file, index_file, L):
+def build_cells(cell_indices, A0, P0):
 	cells = []
-	network_vertices = read_network_vertices(vertex_file)
-	cell_indices = read_cell_indices(index_file)
 	for i,indices in enumerate(cell_indices):
-		cell = Cell(i, network_vertices, indices, L)
+		cell = Cell(i, indices, A0, P0)
 		cells.append(cell)
 	return cells
 
@@ -68,17 +58,6 @@ def write_cells(cells, file):
 									cell.area, cell.perim))
 	f.close()
 	return
-
-def write_cell_vertices(cells, vertices, file):
-	f = open(file,"w+")
-	for cell in cells:
-		cell_vertices = cell.get_cell_vertices(vertices)
-		for x,y in cell_vertices:
-			f.write("%f\t%f\t" % (x,y))
-		f.write("\n")
-	f.close()
-	return
-
 
 # Read/Write class network
 def read_network(file):
