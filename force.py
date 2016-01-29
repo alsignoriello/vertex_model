@@ -139,7 +139,7 @@ def F_tension(cells, kp, vertices, L):
 				coeff = kp * (cell.P0 - cell.get_perim(vertices, L))
 
 
-				forces[i,:] += coeff * f
+				forces[i,:] -= coeff * f
  
 
 	return forces

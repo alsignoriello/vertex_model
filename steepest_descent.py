@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import numpy as np
 from Network import Network
-from parser import build_cells
 
 def steepest_descent(network, delta_t, epsilon):
 
@@ -13,19 +12,25 @@ def steepest_descent(network, delta_t, epsilon):
 	energy = []
 
 	# while forces are greater than epsilon
-	f = epsilon**0.5
-	while np.sum(f**2)**(0.5) > epsilon:
+	forces = epsilon**0.5
+	while np.sum(forces**2)**(0.5) > epsilon:
 
 		# get energy for network
-		e = network.get_energy()
-	
+		energy = network.get_energy_2()
+		# new  equation without linear parameter
+		# energy = network.get_energy()
+
 		# get forces for network
-		f = network.get_forces()
+		forces = network.get_forces_2()
+		# new equation without linear parameter
+		# forces = network.get_forces()
 	
 		# move vertices with forces
-		vertices = network.move_vertices(f)
+		vertices = network.move_vertices(forces)
 
-		print t, e, np.sum(f**2)**(0.5)
+		ka = network.parameters['ka']
+		A0 = 1.
+		print t, energy / (24.*ka*(A0**2)), np.sum(forces**2)**(0.5)
 		t += delta_t
 
 	return t, energy

@@ -46,7 +46,7 @@ A0 = 1.
 
 # kp - coefficient for line tension and 
 # 		maintaining surface area
-kp = 0
+kp = 1.
 parameters['kp'] = kp
 
 
@@ -91,51 +91,23 @@ print "There are %d cells" % (len(cells))
 
 network = Network(L, network_vertices, cells, edges, parameters)
 
-# plot_network(network_vertices, cells, L)
 
+# # steepest descent
+epsilon = 10**-6
 
-# Check energy is decreasing, forces moving vertices correclty
-for i in range(0,100):
-	
-	energy = network.get_energy_2()
-	
-	forces = network.get_forces_2()
-	print energy / (24. * ka * (A0**2)), np.sum(forces**2)**(0.5)
-	
-	# move vertices
-	network.move_vertices(forces)
-
-
+time, energy = steepest_descent(network, delta_t, epsilon)
 
 network_vertices = network.vertices
+
+plot_network(network_vertices, cells, L)
+
+# show plot
+plt.show()
+
 for cell in cells:
 	print "area = %f" % cell.get_area(network_vertices, L)
 	print "perimeter = %f\n" % cell.get_perim(network_vertices, L)
 
-plot_network(network_vertices, cells, L)
-
-exit()
-
-
-# # steepest descent
-# epsilon = 10**-6
-
-# time, energy = steepest_descent(network, delta_t, epsilon)
-
-
-# # plot network
-
-# # plot vertices 
-# network_vertices = network.vertices
-# x = network_vertices[:,0]
-# y = network_vertices[:,1]
-# plt.scatter(x,y,c="k")
-
-# plot edges
-
-
-# show plot
-plt.show()
 
 
 
