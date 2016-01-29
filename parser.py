@@ -76,4 +76,8 @@ def write_network_vertices(vertices, file):
 	np.savetxt(file, vertices)
 	return
 
+def read_edges(file):
+	edges = np.loadtxt(file)
+	return edges
+
 

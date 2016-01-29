@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import numpy as np
+from math import sqrt
 
 """ 
 
@@ -47,13 +48,13 @@ def area(vertices):
 # this may need to be adapted for periodic boundary conditions
 def perimeter(vertices):
 	n = len(vertices)
-	perimeter = 0
+	perimeter = 0.
 	for i in range(0,n):
 		x0,y0 = vertices[i]
 		if i == n - 1:
 			x1,y1 = vertices[0]
 		if i != n - 1:
-			x1,y1 = vertices[1]
+			x1,y1 = vertices[i+1]
 		dist = euclidean_distance(x0, y0, x1, y1)
 		perimeter += dist
 	return perimeter
@@ -61,9 +62,17 @@ def perimeter(vertices):
 
 # compute euclidean distance between (x,y) coordinates
 def euclidean_distance(x0, y0, x1, y1):
-	return ((x0 - x1)**2 + (y0 - y1)**2)**0.5
+	return sqrt((x0 - x1)**2 + (y0 - y1)**2)
 	
 
 # Difference with respect to periodic boundaries
 def periodic_diff(v1,v2,L):
 	return ((v1 - v2 + L/2) % L) - L/2
+
+
+# get unit vector
+def unit_vector(v1,v2):
+	vector = v1 - v2
+	dist = euclidean_distance(v1[0], v1[1], v2[0],v2[1])
+	uv = vector / dist
+	return uv

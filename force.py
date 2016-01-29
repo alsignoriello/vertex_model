@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from geometry import periodic_diff
+from geometry import periodic_diff, unit_vector
 
 
 """
@@ -25,8 +25,7 @@ def get_clockwise(index, indices, vertices, L):
 	# wrap around to 0 if at end of the list
 	if pos == len(indices) - 1:
 		pos = 0
-
-	if pos != len(indices) - 1:
+	else:
 		pos += 1
 
 	# compute vertex wrt periodic boundaries
@@ -48,8 +47,7 @@ def get_counter_clockwise(index, indices, vertices, L):
 	# wrap around to end of list if first value
 	if pos == 0:
 		pos = len(indices) - 1
-
-	if pos != 0:
+	else:
 		pos -= 1
 
 	v0 = vertices[index]
@@ -60,7 +58,7 @@ def get_counter_clockwise(index, indices, vertices, L):
 
 
 # Force on vertex due to elasticity
-def F_elasticity(cells, ka, vertices, L):
+def F_elasticity(vertices, cells, ka,  L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -75,8 +73,6 @@ def F_elasticity(cells, ka, vertices, L):
 			# if this vertex is in current cell
 			# compute force contributed from this cell
 			if i in cell.indices:
-				# force contributed from this cell stored in f
-				f = 2. * ka * (cell.A0 - cell.get_area(vertices, L))
 
 				# get clockwise vector
 				vc = get_clockwise(i, cell.indices, vertices, L)
@@ -93,15 +89,15 @@ def F_elasticity(cells, ka, vertices, L):
 				perp_matrix[0,1] = 1.
 				perp_matrix[1,0] = -1.
 
-				f *= np.dot(perp_matrix, diff)
+				f = -0.5 * np.dot(perp_matrix, diff)
 
-				# move to midpoint of difference vector
-				f *= 0.5
+				# force contributed from this cell stored in f
+				coeff = ka * (cell.A0 - cell.get_area(vertices, L))
 
-				forces[i,:] -=  f
+				forces[i,:] += coeff * f
 
 
-	return forces
+	return -forces
 
 
 
@@ -110,7 +106,7 @@ def F_elasticity(cells, ka, vertices, L):
 def F_tension(cells, kp, vertices, L):
 	n_vertices = len(vertices)
 
-	# evert vertex has an associated force
+	# every vertex has an associated force
 	forces = np.zeros((n_vertices, 2))
 
 	# iterate over vertices and get force
@@ -122,9 +118,6 @@ def F_tension(cells, kp, vertices, L):
 			# if this vertex is in current cell
 			# compute force contributed from this cell
 			if i in cell.indices:
-				# force contributed from this cell stored in f
-				f = 2. * kp * (cell.P0 - cell.get_perim(vertices, L))
-
 				# get clockwise vector
 				vc = get_clockwise(i, cell.indices, vertices, L)
 
@@ -140,11 +133,60 @@ def F_tension(cells, kp, vertices, L):
 				perp_matrix[0,1] = 1.
 				perp_matrix[1,0] = -1.
 
-				f *= np.dot(perp_matrix, diff)
+				f = -0.5 * np.dot(perp_matrix, diff)
 
-				# move to midpoint of difference vector
-				f *= 0.5
+				# force contributed from this cell stored in f
+				coeff = kp * (cell.P0 - cell.get_perim(vertices, L))
 
-				forces[i,:] -=  f
+
+				forces[i,:] += coeff * f
+ 
 
 	return forces
+
+
+
+def F_adhesion(vertices, cells, gamma, L):
+
+	# every vertex has an associated force
+	n_vertices = len(vertices)
+	forces = np.zeros((n_vertices, 2))
+
+	for i,vertex in enumerate(vertices):
+
+		# find cells with this vertex
+		for cell in cells:
+
+			if i in cell.indices:
+
+				# get clockwise vector
+				vc = get_clockwise(i, cell.indices, vertices, L)
+				uvc = unit_vector(vertex, vc)
+	
+				# get counter-clockwise vector
+				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
+				uvcc = unit_vector(vcc, vertex)
+
+
+				# get perimeter for this cell
+				p = cell.get_perim(vertices, L)
+
+				forces[i,:] -= (gamma * p) * (uvc - uvcc)
+
+	return forces
+
+def F_actin_myosin(vertices, edges, Lambda, L):
+
+	# every vertex has an associated force
+	n_vertices = len(vertices)
+	forces = np.zeros((n_vertices, 2))
+
+	for i,vertex in enumerate(vertices):
+		edge_list = edges[i]
+		for edge in edge_list:
+			v2 = vertices[edge]
+			vertex2 = vertex + periodic_diff(v2, vertex, L)
+			uv = unit_vector(vertex, vertex2)
+			forces[i,:] -= Lambda * uv
+	return forces
+

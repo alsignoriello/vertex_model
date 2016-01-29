@@ -37,11 +37,12 @@ parameters - dictionary containing relevant parameter values
 class Network:
 
 
-	def __init__(self, L, vertices, cells, parameters):
+	def __init__(self, L, vertices, cells, edges, parameters):
 		self.L = L
 		self.vertices = vertices
 		self.cells = cells
 		self.parameters = parameters
+		self.edges = edges
 
 
 	# Potential Energy
@@ -72,12 +73,51 @@ class Network:
 		L = self.L
 
 		ka = self.parameters['ka']
-		f1 = F_elasticity(cells, ka, vertices, L)
+		f1 = F_elasticity(vertices, cells, ka, L)
 
 		kp = self.parameters['kp']
 		f2 = F_tension(cells, kp, vertices, L)
 
 		return -(f1 + f2)
+
+	def get_energy_2(self):
+		cells = self.cells
+		vertices = self.vertices
+		L = self.L
+		edges = self.edges
+
+		ka = self.parameters['ka']
+		e1 = E_elasticity(vertices, cells, ka, L)
+		# print "Energy for Elasticity: %f\n" % e1
+
+		gamma = self.parameters['gamma']
+		e2 = E_adhesion(vertices, cells, gamma, L)
+		# print "Energy for Adhesion: %f\n" % e2
+
+		Lambda = self.parameters['Lambda']
+		e3 = E_actin_myosin(vertices, edges, Lambda, L)
+		# double counting edges
+		e3 = e3 / 4.
+		# print "Energy for Actin: %f\n" % e3
+
+		return e1 + e2 + e3
+
+	def get_forces_2(self):
+		cells = self.cells
+		vertices = self.vertices
+		L = self.L
+		edges = self.edges
+
+		ka = self.parameters['ka']
+		f1 = F_elasticity(vertices, cells, ka, L)
+
+		gamma = self.parameters['gamma']
+		f2 = F_adhesion(vertices, cells, gamma, L)
+
+		Lambda = self.parameters['Lambda']
+		f3 = F_actin_myosin(vertices, edges, Lambda, L)
+
+		return (f1 + f2 + f3)
 
 
 	# # move vertices wrt forces 
