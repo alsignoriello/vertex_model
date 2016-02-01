@@ -28,6 +28,8 @@ def E_elasticity(vertices, cells, ka, L):
 
 
 
+# NEW EQUATION!
+# combines linear + quadratic parameter for perimeter
 # Energy due to line tension & maintaing surface area
 def E_tension(vertices, cells, kp, L):
 	e = 0.
@@ -38,10 +40,9 @@ def E_tension(vertices, cells, kp, L):
 	return e
 
 
-
 # # # OLD EQUATIONS!
 
-def E_actin_myosin(vertices, edges, Lambda, L):
+def E_adhesion(vertices, edges, tau , L):
 	e = 0.
 	for i,neighbors in enumerate(edges):
 		vertex = vertices[i]
@@ -50,11 +51,11 @@ def E_actin_myosin(vertices, edges, Lambda, L):
 			vertex2 = vertex + periodic_diff(v2, vertex, L)
 			dist = euclidean_distance(vertex[0], vertex[1],
 									vertex2[0], vertex2[1])
-			e += Lambda * dist
+			e += tau * dist
 	return e
 
 
-def E_adhesion(vertices, cells, gamma, L):
+def E_actin_myosin(vertices, cells, gamma, L):
 	e = 0.
 	for cell in cells:
 		p = cell.get_perim(vertices, L)

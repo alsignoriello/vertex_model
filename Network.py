@@ -57,11 +57,9 @@ class Network:
 
 		kp = self.parameters['kp']
 		e2 = E_tension(vertices, cells, kp, L)
-		# don't double count edges between cells
-		e2 = e2 / 2.
 
 		# print "Current Energy: %f\n" % (e1 + e2)
-		return e1 + e2
+		return (e1 + e2)
 
 	# forces on vertices
 	# - derivative of energy wrt vertices
@@ -78,7 +76,7 @@ class Network:
 		kp = self.parameters['kp']
 		f2 = F_tension(cells, kp, vertices, L)
 
-		return -(f1 + f2)
+		return (f1 + f2)
 
 	def get_energy_2(self):
 		cells = self.cells
@@ -90,12 +88,13 @@ class Network:
 		e1 = E_elasticity(vertices, cells, ka, L)
 		# print "Energy for Elasticity: %f\n" % e1
 
-		gamma = self.parameters['gamma']
-		e2 = E_adhesion(vertices, cells, gamma, L)
+		tau = self.parameters['tau']
+		e2 = E_adhesion(vertices, edges, tau, L)
 		# print "Energy for Adhesion: %f\n" % e2
 
-		Lambda = self.parameters['Lambda']
-		e3 = E_actin_myosin(vertices, edges, Lambda, L)
+		
+		gamma = self.parameters['gamma']
+		e3 = E_actin_myosin(vertices, cells, gamma, L)
 		# double counting edges
 		e3 = e3 / 4.
 		# print "Energy for Actin: %f\n" % e3
@@ -111,11 +110,12 @@ class Network:
 		ka = self.parameters['ka']
 		f1 = F_elasticity(vertices, cells, ka, L)
 
-		gamma = self.parameters['gamma']
-		f2 = F_adhesion(vertices, cells, gamma, L)
-
-		Lambda = self.parameters['Lambda']
-		f3 = F_actin_myosin(vertices, edges, Lambda, L)
+		tau = self.parameters['tau']
+		f2 = F_adhesion(vertices, edges, tau, L)
+		# print "Force for Adhesion: %f\n" % np.sum(f2)
+		
+		gamma = self.parameters['gamma']	
+		f3 = F_actin_myosin(vertices, cells, gamma, L)
 
 		return (f1 + f2 + f3)
 

@@ -80,7 +80,3 @@ class Cell:
 	# occurs during a T1 transition
 	def update_indices(self):
 		pass
-
-
-	def get_neighbor_list(self):
-		pass

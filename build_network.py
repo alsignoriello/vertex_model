@@ -52,19 +52,17 @@ parameters['kp'] = kp
 
 # #  P0 - preferred perimeter for cell
 # # This will be a list later
-P0 = 4.5
+P0 = 3.7
 # parameters['P0'] = P0
 
-# # gamma - line tension between cells
-# # linear coefficient
-gamma = 0.04 * ka * A0
-# gamma = 1.
+# # gamma - actin myosin contractility
+gamma = 0.12 * ka * (A0**(3/2))
 parameters['gamma'] = gamma
 
-# # lambda 
-Lambda = 0.12 * ka * (A0**(3/2))
-# Lambda = 1.
-parameters['Lambda'] = Lambda
+# # tau - line tension between cell
+# linear coefficient 
+tau = 0.04 * ka * A0
+parameters['tau'] = tau
 
 # delta_t - time step 
 delta_t = 0.05

@@ -139,14 +139,17 @@ def F_tension(cells, kp, vertices, L):
 				coeff = kp * (cell.P0 - cell.get_perim(vertices, L))
 
 
-				forces[i,:] -= coeff * f
+				forces[i,:] += coeff * f
  
 
-	return forces
+	return -forces
 
 
 
-def F_adhesion(vertices, cells, gamma, L):
+
+## OLD EQUATIONS!
+
+def F_actin_myosin(vertices, cells, gamma, L):
 
 	# every vertex has an associated force
 	n_vertices = len(vertices)
@@ -175,7 +178,7 @@ def F_adhesion(vertices, cells, gamma, L):
 
 	return forces
 
-def F_actin_myosin(vertices, edges, Lambda, L):
+def F_adhesion(vertices, edges, tau, L):
 
 	# every vertex has an associated force
 	n_vertices = len(vertices)
@@ -187,6 +190,6 @@ def F_actin_myosin(vertices, edges, Lambda, L):
 			v2 = vertices[edge]
 			vertex2 = vertex + periodic_diff(v2, vertex, L)
 			uv = unit_vector(vertex, vertex2)
-			forces[i,:] -= Lambda * uv
+			forces[i,:] -= tau * uv
 	return forces
 
