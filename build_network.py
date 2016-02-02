@@ -56,12 +56,14 @@ P0 = 3.7
 # parameters['P0'] = P0
 
 # # gamma - actin myosin contractility
-gamma = 0.12 * ka * (A0**(3/2))
+gamma = 0.04 * ka * A0
+print gamma
 parameters['gamma'] = gamma
 
 # # tau - line tension between cell
 # linear coefficient 
-tau = 0.04 * ka * A0
+# tau = 0.12 * ka * (A0**(3/2))
+tau = 0.01
 parameters['tau'] = tau
 
 # delta_t - time step 
@@ -89,7 +91,6 @@ print "There are %d cells" % (len(cells))
 
 network = Network(L, network_vertices, cells, edges, parameters)
 
-
 # # steepest descent
 epsilon = 10**-6
 
@@ -102,9 +103,9 @@ plot_network(network_vertices, cells, L)
 # show plot
 plt.show()
 
-for cell in cells:
-	print "area = %f" % cell.get_area(network_vertices, L)
-	print "perimeter = %f\n" % cell.get_perim(network_vertices, L)
+# for cell in cells:
+# 	print "area = %f" % cell.get_area(network_vertices, L)
+# 	print "perimeter = %f\n" % cell.get_perim(network_vertices, L)
 
 
 
