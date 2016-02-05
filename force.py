@@ -101,54 +101,6 @@ def F_elasticity(vertices, cells, ka,  L):
 
 
 
-
-# Force on vertex due to line tension
-def F_tension(cells, kp, vertices, L):
-	n_vertices = len(vertices)
-
-	# every vertex has an associated force
-	forces = np.zeros((n_vertices, 2))
-
-	# iterate over vertices and get force
-	for i,vertex in enumerate(vertices):
-
-		# find cells with this vertex
-		for cell in cells:
-
-			# if this vertex is in current cell
-			# compute force contributed from this cell
-			if i in cell.indices:
-				# get clockwise vector
-				vc = get_clockwise(i, cell.indices, vertices, L)
-
-				# get counter-clockwise vector
-				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
-
-				# get the difference vector
-				diff = vc - vcc
-
-				# compute perpendicular vector
-				# assure correct direction (pointing towards vertex)
-				perp_matrix = np.zeros((2,2))
-				perp_matrix[0,1] = 1.
-				perp_matrix[1,0] = -1.
-
-				f = -0.5 * np.dot(perp_matrix, diff)
-
-				# force contributed from this cell stored in f
-				coeff = kp * (cell.P0 - cell.get_perim(vertices, L))
-
-
-				forces[i,:] += coeff * f
- 
-
-	return -forces
-
-
-
-
-## OLD EQUATIONS!
-
 def F_actin_myosin(vertices, cells, gamma, L):
 
 	# every vertex has an associated force
@@ -192,4 +144,6 @@ def F_adhesion(vertices, edges, tau, L):
 			uv = unit_vector(vertex, vertex2)
 			forces[i,:] -= tau * uv
 	return forces
+
+
 

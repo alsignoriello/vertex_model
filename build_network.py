@@ -46,13 +46,13 @@ A0 = 1.
 
 # kp - coefficient for line tension and 
 # 		maintaining surface area
-kp = 1.
+kp = 0.1
 parameters['kp'] = kp
 
 
 # #  P0 - preferred perimeter for cell
 # # This will be a list later
-P0 = 3.7
+P0 = 0.2
 # parameters['P0'] = P0
 
 # # gamma - actin myosin contractility
@@ -62,8 +62,8 @@ parameters['gamma'] = gamma
 
 # # tau - line tension between cell
 # linear coefficient 
-# tau = 0.12 * ka * (A0**(3/2))
-tau = 0.01
+tau = 0.12 * ka * (A0**(3/2))
+# tau = 0.01
 parameters['tau'] = tau
 
 # delta_t - time step 

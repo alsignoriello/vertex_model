@@ -16,13 +16,9 @@ def steepest_descent(network, delta_t, epsilon):
 	while np.sum(forces**2)**(0.5) > epsilon:
 
 		# get energy for network
-		# energy = network.get_energy_2()
-		# new  equation without linear parameter
 		energy = network.get_energy()
 
 		# get forces for network
-		# forces = network.get_forces_2()
-		# new equation without linear parameter
 		forces = network.get_forces()
 	
 		# move vertices with forces
@@ -30,7 +26,13 @@ def steepest_descent(network, delta_t, epsilon):
 
 		ka = network.parameters['ka']
 		A0 = 1.
-		print t, energy / (24.*ka*(A0**2)), np.sum(forces**2)**(0.5)
+		# print t, energy / (24.*ka*(A0**2)), np.sum(forces**2)**(0.5)
+		
+		# new time step
 		t += delta_t
+
+		# check for T1 transitions
+		min_dist = 0.2
+		network.T1_transitions(min_dist)
 
 	return t, energy
