@@ -57,7 +57,6 @@ P0 = 0.2
 
 # # gamma - actin myosin contractility
 gamma = 0.04 * ka * A0
-print gamma
 parameters['gamma'] = gamma
 
 # # tau - line tension between cell
@@ -82,7 +81,7 @@ cell_indices = read_cell_indices(cell_index_file)
 
 # read edge list
 edge_file = "edge_indices.txt" 
-edges= read_edges(edge_file)
+edges = read_edges(edge_file)
 
 
 # Build cells
@@ -102,11 +101,5 @@ plot_network(network_vertices, cells, L)
 
 # show plot
 plt.show()
-
-# for cell in cells:
-# 	print "area = %f" % cell.get_area(network_vertices, L)
-# 	print "perimeter = %f\n" % cell.get_perim(network_vertices, L)
-
-
 
 

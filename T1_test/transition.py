@@ -46,10 +46,6 @@ def T1(cells, edges, L, i1, i2):
 			cell_ids[1] = cell.id
 
 	# print cell_ids
-	if -1 in cell_ids:
-		return cells, edges
-
-		
 	# Cell 1
 	# Delete v2
 	cell_1 = cells[int(cell_ids[0])]
