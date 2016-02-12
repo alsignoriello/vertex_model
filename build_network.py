@@ -70,10 +70,9 @@ delta_t = 0.05
 parameters['delta_t'] = delta_t
 
 # Read Files
-
 # read in list of all vertices in network
-network_vertex_file = "network_vertices.txt"
-network_vertices = read_network_vertices(network_vertex_file)
+vertex_file = "network_vertices.txt"
+vertices = read_network_vertices(vertex_file)
 
 # read cell indices 
 cell_index_file = "cell_indices.txt"
@@ -88,16 +87,14 @@ edges = read_edges(edge_file)
 cells = build_cells(cell_indices, A0, P0)
 print "There are %d cells" % (len(cells))
 
-network = Network(L, network_vertices, cells, edges, parameters)
+network = Network(L, vertices, cells, edges, parameters)
 
 # # steepest descent
 epsilon = 10**-6
 
-time, energy = steepest_descent(network, delta_t, epsilon)
+time, energy, vertices, cells, edges = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-network_vertices = network.vertices
-
-plot_network(network_vertices, cells, L)
+plot_network(vertices, cells, L)
 
 # show plot
 plt.show()

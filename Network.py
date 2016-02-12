@@ -40,17 +40,11 @@ class Network:
 
 	def __init__(self, L, vertices, cells, edges, parameters):
 		self.L = L
-		self.vertices = vertices
-		self.cells = cells
 		self.parameters = parameters
-		self.edges = edges
 
 
-	def get_energy(self):
-		cells = self.cells
-		vertices = self.vertices
+	def get_energy(self, vertices, cells, edges):
 		L = self.L
-		edges = self.edges
 
 		ka = self.parameters['ka']
 		e1 = E_elasticity(vertices, cells, ka, L)
@@ -65,11 +59,8 @@ class Network:
 
 		return e1 + e2 + e3
 
-	def get_forces(self):
-		cells = self.cells
-		vertices = self.vertices
+	def get_forces(self, vertices, cells, edges):
 		L = self.L
-		edges = self.edges
 
 		ka = self.parameters['ka']
 		f1 = F_elasticity(vertices, cells, ka, L)
@@ -84,18 +75,14 @@ class Network:
 
 
 	# # move vertices wrt forces 
-	def move_vertices(self, f):
+	def move_vertices(self, f, vertices):
 		delta_t = self.parameters['delta_t']
-		vertices = self.vertices
-		self.vertices = vertices + delta_t * f
-		return 
+		vertices = vertices + delta_t * f
+		return vertices 
 
 
-	def T1_transitions(self, min_dist):
-		edges = self.edges
-		vertices = self.vertices
+	def T1_transitions(self, vertices, cells, edges, min_dist):
 		L = self.L
-		cells = self.cells
 
 		# iterate over edges 
 		for i,edge in enumerate(edges):
@@ -110,11 +97,11 @@ class Network:
 				dist = euclidean_distance(v0[0], v0[1], v1[0], v1[1])
 			
 				if dist < min_dist:
-					# print "T1\n" #dist
+					print "T1\n" #dist
 					# T1 transition
-					self.cells, self.edges = T1(cells, edges, L, i, index)
-					return
-		return 
+					# self.cells, self.edges = T1(cells, edges, L, i, index)
+
+		return cells, edges
 
 
 
