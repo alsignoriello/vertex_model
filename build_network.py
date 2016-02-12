@@ -82,7 +82,6 @@ cell_indices = read_cell_indices(cell_index_file)
 edge_file = "edge_indices.txt" 
 edges = read_edges(edge_file)
 
-
 # Build cells
 cells = build_cells(cell_indices, A0, P0)
 print "There are %d cells" % (len(cells))

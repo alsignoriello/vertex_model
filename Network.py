@@ -2,7 +2,7 @@
 import numpy as np
 from energy import *
 from force import *
-from transition import T1
+from transition import *
 
 """
 
@@ -81,16 +81,16 @@ class Network:
 		return vertices 
 
 
-	def T1_transitions(self, vertices, cells, edges, min_dist):
+	def T1(self, vertices, cells, edges, min_dist):
 		L = self.L
 
 		# iterate over edges 
-		for i,edge in enumerate(edges):
+		for i1,edge in enumerate(edges):
 			# iterate over edge indices
-			for index in edge:
+			for i2 in edge:
 				# get vertices
-				v0 = vertices[i]
-				v = vertices[index]
+				v0 = vertices[i1]
+				v = vertices[i2]
 				# get vertex 2 wrt periodic boundaries
 				v1 = v0 + periodic_diff(v, v0, L)
 
@@ -100,6 +100,33 @@ class Network:
 					print "T1\n" #dist
 					# T1 transition
 					# self.cells, self.edges = T1(cells, edges, L, i, index)
+					cell_ids = get_4_cells(cells, i1, i2)
+					if -1 in cell_ids:
+						# do nothing
+						pass
+					else:
+						# find minimum configuration
+						# original configuration
+						cells_0, edges_0 = T1_0(cells, edges, cell_ids)
+						E0 = self.get_energy(vertices, cells_0, edges_0)
+						print E0
+
+						# # left T1 transition
+						# E_left = 
+						# cells_left, edges_left = T1_left(cells, edges, cell_ids)
+						# E_left = self.get_energy(vertices, cells_left, edges_left)
+
+						# # right T1 transition
+						# cells_right, edges_right = T1_right(cells, edges, cell_ids)
+						# E_right = self.get_energy(vertices, cells_right, edges_right)
+
+						# get minimum
+						# min_energy = np.minimum((E0, E_left, E_right))
+
+						# if current configuration is minimum
+
+						# else: replace cells and edges
+					exit()
 
 		return cells, edges
 

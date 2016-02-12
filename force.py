@@ -136,13 +136,15 @@ def F_adhesion(vertices, edges, tau, L):
 	n_vertices = len(vertices)
 	forces = np.zeros((n_vertices, 2))
 
-	for i,vertex in enumerate(vertices):
-		edge_list = edges[i]
-		for edge in edge_list:
-			v2 = vertices[edge]
-			vertex2 = vertex + periodic_diff(v2, vertex, L)
-			uv = unit_vector(vertex, vertex2)
-			forces[i,:] -= tau * uv
+	for edge in edges:
+		i1 = edge[0]
+		i2 = edge[1]
+		v1 = vertices[i1]
+		vertex2 = vertices[i2]
+		v2 = v1 + periodic_diff(vertex2, v1, L)
+		uv = unit_vector(v1, v2)
+		forces[i1,:] -= tau * uv
+
 	return forces
 
 

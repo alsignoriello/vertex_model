@@ -31,8 +31,8 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 		# new time step
 		t += delta_t
 
-		# # # # check for T1 transitions
+		# # # # # check for T1 transitions
 		# min_dist = 0.3
-		# cells, edges = T1_transitions(vertices, cells, edges, min_dist)
+		# cells, edges = network.T1(vertices, cells, edges, min_dist)
 
 	return t, energy, vertices, cells, edges

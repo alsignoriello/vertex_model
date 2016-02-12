@@ -59,15 +59,6 @@ def write_cells(cells, file):
 	f.close()
 	return
 
-# Read/Write class network
-def read_network(file):
-	pass
-
-
-def write_network(file, network):
-	pass
-
-
 def read_network_vertices(file):
 	vertices = np.loadtxt(file)
 	return vertices
@@ -76,8 +67,18 @@ def write_network_vertices(vertices, file):
 	np.savetxt(file, vertices)
 	return
 
+# current edge file set up st every vertex index corresponds to 3 edges
+# transform this to a list with i1, i2 so easier to manipulate
 def read_edges(file):
-	edges = np.loadtxt(file).astype(int)
+	edges0 = np.loadtxt(file).astype(int)
+	edges = np.zeros((len(edges0)*3, 2)).astype(int)
+	counter = 0
+	for i,edge in enumerate(edges0):
+		for j in edge:
+			print i, j
+			edges[counter, 0] = i
+			edges[counter, 1] = j
+			counter += 1
 	return edges
 
 
