@@ -75,7 +75,7 @@ def read_edges(file):
 	counter = 0
 	for i,edge in enumerate(edges0):
 		for j in edge:
-			print i, j
+			# print i, j
 			edges[counter, 0] = i
 			edges[counter, 1] = j
 			counter += 1

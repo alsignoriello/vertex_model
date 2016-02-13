@@ -81,6 +81,7 @@ cell_indices = read_cell_indices(cell_index_file)
 # read edge list
 edge_file = "edge_indices.txt" 
 edges = read_edges(edge_file)
+# print len(edges)
 
 # Build cells
 cells = build_cells(cell_indices, A0, P0)

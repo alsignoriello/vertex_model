@@ -11,6 +11,9 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 	# keep track of energy
 	energy = []
 
+	# for T1 transition
+	min_dist = 0.3
+
 	# while forces are greater than epsilon
 	forces = epsilon**0.5
 	while np.sum(forces**2)**(0.5) > epsilon:
@@ -31,8 +34,7 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 		# new time step
 		t += delta_t
 
-		# # # # # check for T1 transitions
-		# min_dist = 0.3
-		# cells, edges = network.T1(vertices, cells, edges, min_dist)
-
+		# # check for T1 transitions
+		cells, edges = network.T1(vertices, cells, edges, min_dist)
+		exit()
 	return t, energy, vertices, cells, edges
