@@ -29,14 +29,6 @@ def E_elasticity(vertices, cells, ka, L):
 
 def E_adhesion(vertices, edges, tau , L):
 	e = 0.
-	# for i,neighbors in enumerate(edges):
-	# 	vertex = vertices[i]
-	# 	for j in neighbors:
-	# 		v2 = vertices[j]
-	# 		vertex2 = vertex + periodic_diff(v2, vertex, L)
-	# 		dist = euclidean_distance(vertex[0], vertex[1],
-	# 								vertex2[0], vertex2[1])
-	# 		e += tau * dist
 	for edge in edges:
 		i1 = edge[0]
 		i2 = edge[1]
