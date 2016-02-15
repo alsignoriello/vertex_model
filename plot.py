@@ -25,7 +25,8 @@ options:
 """
 
 
-def plot_network(vertices, cells, L):
+def plot_network(vertices, cells, L, file):
+	plt.cla()
 	fig = plt.figure()
 	ax = fig.add_subplot(1,1,1)
 	for vertex in vertices:
@@ -49,45 +50,53 @@ def plot_network(vertices, cells, L):
 			ax.plot([x1,x2],[y1,y2],c="k")
 
 	ax.axis([0,L[0],0,L[1]])
+	plt.savefig(file)
+	plt.close(fig)
+	return
+
+
+
+
+# Plots to test T1 transition
+def plot_4_cells(vertices, cells, i1, i2, L):
+
+	x1,y1 = vertices[i1]
+	x2,y2 = vertices[i2]
+	plt.scatter(x1,y1,color="r",marker="*")
+	plt.scatter(x2,y2,color="m",marker="*")
+
+	colors = ["c", "r", "g", "m"]
+	for i,cell in enumerate(cells):
+		indices = cell.indices
+		for e1,e2 in zip(indices,np.concatenate((indices[1:],[indices[0]]))):
+			x1,y1 = vertices[e1]
+			x2,y2 = vertices[e2]
+			plt.plot([x1,x2], [y1,y2], color=colors[i])
+
+	plt.axis([0,L[0]+0.2,0,L[1]+0.2])
+	plt.show()
+	return
+
+def plot_6_indices(vertices, indices):
+	colors = ["c", "r", "g", "m", "k", "b"]
+	print indices
+	for i,index in enumerate(indices):
+		x,y = vertices[index]
+		plt.scatter(x,y,color=colors[i],marker="*")
+	plt.show()
+	return 
+
+def plot_10_edges(vertices, edges, L):
+
+	for edge in edges:
+		x1,y1 = vertices[edge[0]]
+		x2,y2 = vertices[edge[1]]
+		plt.plot([x1,x2],[y1,y2],color="k")
+
 	plt.show()
 	return
 
 
 
-# # files to read for plotting
-# cell_file = "cells.txt"
-# cell_vertex_file = "cell_vertices"
-# network_file = "network.txt"
-# network_vertex_file = "network_vertices.txt"
-# network_edge_file = "network_edges.txt"
-
-# # open files
-# network_vertices = read_network_vertices(network_vertex_file)
-# x = network_vertices[:,0]
-# y = network_vertices[:,1]
-# print x,y
-
-# # close files
-
-
-
-# # initalize plot
-# fig = plt.figure()
-# ax = fig.add_subplot(1, 1, 1)
-
-# # plot vertices 
-# ax.scatter(x,y,c="k")
-
-# # plot edges
-
-
-# # show plot
-# plt.show()
-
-# # save plot
-
-
-# # close plot
-# # plt.close(fig)
 
 

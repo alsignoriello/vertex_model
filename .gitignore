@@ -6,3 +6,5 @@ run.sh
 generate_network.py
 T1_test/*
 generate_voronoi.py
+*.jpg
+conjugate_gradient.py

@@ -16,9 +16,11 @@ vertices - 	list of all vertices in the network
 cell_vertices - list of vertices in current cell
 [(x0,y0), (x1,y1) ... (xNsides,yNsides)]
 
+
 indices - 	indices mapping to vertices 
 			for every vertex in current cell 
 			* counter-clockwise order 
+			* list of integers
 
 n_sides - 	number of sides in polygon for given cell
 

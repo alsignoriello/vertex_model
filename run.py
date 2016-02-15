@@ -78,25 +78,24 @@ vertices = read_network_vertices(vertex_file)
 cell_index_file = "cell_indices.txt"
 cell_indices = read_cell_indices(cell_index_file)
 
+# Build cells
+cells = build_cells(cell_indices, A0, P0)
+print "There are %d cells" % (len(cells))
+
 # read edge list
 edge_file = "edge_indices.txt" 
 edges = read_edges(edge_file)
 # print len(edges)
-
-# Build cells
-cells = build_cells(cell_indices, A0, P0)
-print "There are %d cells" % (len(cells))
 
 network = Network(L, parameters)
 
 # # steepest descent
 epsilon = 10**-6
 
-time, energy, vertices, cells, edges = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-plot_network(vertices, cells, L)
+vertices = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-# show plot
-plt.show()
+plot_network(vertices, cells, L, "hex_network.jpg")
+
 
 
