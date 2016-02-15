@@ -3,6 +3,7 @@ import numpy as np
 from Cell import Cell
 from geometry import periodic_diff
 from energy import *
+import copy
 
 
 """ 
@@ -43,7 +44,7 @@ def T1_0(cells, edges, i1, i2, cell_ids):
 	cells_0 = []
 	# ids in correct order already
 	for i in cell_ids:
-		cell = cells[i]
+		cell = copy.deepcopy(cells[i])
 		cells_0.append(cell)
 
 	# define cells
@@ -139,7 +140,7 @@ def T1_left(cells, edges, i1, i2, cell_ids):
 	cells_l = []
 	# ids in correct order already
 	for i in cell_ids:
-		cell = cells[i]
+		cell = copy.deepcopy(cells[i])
 		cells_l.append(cell)
 
 	# define cells
@@ -256,11 +257,7 @@ def T1_right(cells, edges, i1, i2, cell_ids):
 
 	cells_r = []
 	for i in cell_ids:
-		cell = cells[i]
-		print cell.indices
-		# this is the problem.... cells should be constant
-		# but the edits from cells_l (cell from left transition)
-		# are in cells 
+		cell = copy.deepcopy(cells[i])
 		cells_r.append(cell)
 
 	# define cells
@@ -269,110 +266,109 @@ def T1_right(cells, edges, i1, i2, cell_ids):
 	cell_2 = cells_r[2]
 	cell_3 = cells_r[3]
 
-	# # Find indices wrt Cell 1
-	# pos = np.where(cell_1.indices == i1)[0]
+	# Find indices wrt Cell 1
+	pos = np.where(cell_1.indices == i1)[0]
 
-	# # i3: cell 1 before i1
-	# if pos == 0:
-	# 	i_left = len(cell_1.indices) - 1
-	# else:
-	# 	i_left = pos - 1
-	# i3 = cell_1.indices[i_left]
+	# i3: cell 1 before i1
+	if pos == 0:
+		i_left = len(cell_1.indices) - 1
+	else:
+		i_left = pos - 1
+	i3 = cell_1.indices[i_left]
 
-	# # i4: cell 1 after i1
-	# if pos == len(cell_1.indices) - 1:
-	# 	i_right = 0
-	# else:
-	# 	i_right = pos + 1
-	# i4 = cell_1.indices[i_right]
+	# i4: cell 1 after i1
+	if pos == len(cell_1.indices) - 1:
+		i_right = 0
+	else:
+		i_right = pos + 1
+	i4 = cell_1.indices[i_right]
 
-	# # i5: cell 3 before i2
-	# cell_3 = cells_0[3]
-	# pos = np.where(cell_3.indices == i2)[0]
-	# if pos == 0:
-	# 	i_left = len(cell_3.indices) - 1
-	# else: 
-	# 	i_left = pos - 1
-	# i5 = cell_3.indices[i_left]
+	# i5: cell 3 before i2
+	pos = np.where(cell_3.indices == i2)[0]
+	if pos == 0:
+		i_left = len(cell_3.indices) - 1
+	else: 
+		i_left = pos - 1
+	i5 = cell_3.indices[i_left]
 
-	# # i6: cell 3 after i2
-	# if pos == len(cell_3.indices) - 1:
-	# 	i_right = 0
-	# else:
-	# 	i_right = pos + 1
-	# i6 = cell_3.indices[i_right]
+	# i6: cell 3 after i2
+	if pos == len(cell_3.indices) - 1:
+		i_right = 0
+	else:
+		i_right = pos + 1
+	i6 = cell_3.indices[i_right]
 
-	# # Cell 0: remove i1
-	# pos = np.where(cell_0.indices == i1)[0]
-	# indices = np.delete(cell_0.indices, pos)
-	# cells_r[0].indices = indices
+	# Cell 0: remove i1
+	pos = np.where(cell_0.indices == i1)[0]
+	indices = np.delete(cell_0.indices, pos)
+	cells_r[0].indices = indices
 
 
-	# # # Cell 1: insert i2 after i1
+	# # Cell 1: insert i2 after i1
 	# print cell_1.indices
-	# pos = np.where(cell_1.indices == i1)[0]
+	pos = np.where(cell_1.indices == i1)[0]
 	# print pos, i1, i2
-	# left_indices = cell_1.indices[:pos+1]
-	# right_indices = cell_1.indices[pos+1:]
+	left_indices = cell_1.indices[:pos+1]
+	right_indices = cell_1.indices[pos+1:]
 	# print left_indices, right_indices
-	# indices = np.concatenate((left_indices, [i2], right_indices))
-	# cells_r[1].indices = indices
+	indices = np.concatenate((left_indices, [i2], right_indices))
+	cells_r[1].indices = indices
 	# print indices
 
-	# # Cell 2: remove i2
-	# pos = np.where(cell_2.indices == i2)[0]
-	# indices = np.delete(cell_2.indices, pos)
-	# cells_r[0].indices = indices
+	# Cell 2: remove i2
+	pos = np.where(cell_2.indices == i2)[0]
+	indices = np.delete(cell_2.indices, pos)
+	cells_r[0].indices = indices
 
 	# Cell 3: insert i1 after i2
 	# print cell_3.indices
-	# pos = np.where(cell_3.indices == i2)[0]
-	# left_indices = cell_3.indices[:pos+1]
-	# right_indices = cell_3.indices[pos+1:]
-	# indices = np.concatenate((left_indices, [i1], right_indices))
-	# cells_r[3].indices = indices 
+	pos = np.where(cell_3.indices == i2)[0]
+	left_indices = cell_3.indices[:pos+1]
+	right_indices = cell_3.indices[pos+1:]
+	indices = np.concatenate((left_indices, [i1], right_indices))
+	cells_r[3].indices = indices 
 
 	# # Edges
 	edges_r = np.zeros((10,2))
-	# # Edge 0: i1 - i2
-	# edges_r[0,0] = i1
-	# edges_r[0,1] = i2
+	# Edge 0: i1 - i2
+	edges_r[0,0] = i1
+	edges_r[0,1] = i2
 
-	# # Edge 1: i1 - i3
-	# edges_r[1,0] = i1
-	# edges_r[1,1] = i3
+	# Edge 1: i1 - i3
+	edges_r[1,0] = i1
+	edges_r[1,1] = i3
 
-	# # Edge 2: i2 - i4
-	# edges_r[2,0] = i2
-	# edges_r[2,1] = i4
+	# Edge 2: i2 - i4
+	edges_r[2,0] = i2
+	edges_r[2,1] = i4
 
-	# # Edge 3: i2 - i1
-	# edges_r[3,0] = i2
-	# edges_r[3,1] = i1
+	# Edge 3: i2 - i1
+	edges_r[3,0] = i2
+	edges_r[3,1] = i1
 
-	# # Edge 4: i2 - i5
-	# edges_r[4,0] = i2
-	# edges_r[4,1] = i5
+	# Edge 4: i2 - i5
+	edges_r[4,0] = i2
+	edges_r[4,1] = i5
 
-	# # Edge 5: i2 - i4
-	# edges_r[5,0] = i2
-	# edges_r[5,1] = i4
+	# Edge 5: i2 - i4
+	edges_r[5,0] = i2
+	edges_r[5,1] = i4
 
-	# # Edge 6: i3 - i1 # reverse edges
-	# edges_r[6,0] = i3
-	# edges_r[6,1] = i1
+	# Edge 6: i3 - i1 # reverse edges
+	edges_r[6,0] = i3
+	edges_r[6,1] = i1
 
-	# # Edge 7: i4 - i2
-	# edges_r[7,0] = i4
-	# edges_r[7,1] = i2
+	# Edge 7: i4 - i2
+	edges_r[7,0] = i4
+	edges_r[7,1] = i2
 
-	# # Edge 8: i5 - i2 
-	# edges_r[8,0] = i5
-	# edges_r[8,1] = i2
+	# Edge 8: i5 - i2 
+	edges_r[8,0] = i5
+	edges_r[8,1] = i2
 
-	# # Edge 9: i6 - i1
-	# edges_r[9,0] = i6
-	# edges_r[9,1] = i1
+	# Edge 9: i6 - i1
+	edges_r[9,0] = i6
+	edges_r[9,1] = i1
 
 
 	return cells_r, edges_r
@@ -418,17 +414,69 @@ def get_4_cells(cells, i1, i2):
 	
 
 
+def T1_transition(network, vertices, cells, edges, min_dist):
+	L = network.L
+
+	for edge in edges:
+		i1 = edge[0]
+		i2 = edge[1]
+
+		v1 = vertices[i1]
+		vertex2 = vertices[i2]
+		v2 = v1 + periodic_diff(vertex2, v1, L)
+
+		dist = euclidean_distance(v1[0], v1[1], v2[0], v2[1])
+
+		if dist < min_dist:
+			print "T1"
+			cell_ids = get_4_cells(cells, i1, i2)
+			if -1 in cell_ids:
+				# print cell_ids
+				pass
+			else:
+				# find minimum configuration
+
+				# original configuration
+				cells_0, edges_0 = T1_0(cells, edges, i1, i2, cell_ids)
+				E0 = network.get_energy(vertices, cells_0, edges_0)
+				print E0
+
+				# left T1 transition 
+				cells_l, edges_l = T1_left(cells, edges, i1, i2, cell_ids)
+				E_left = network.get_energy(vertices, cells_l, edges_l)
+				print E_left
+
+				# for cell in cells_l:
+				# 	print cell.indices
+
+				# for cell in cells:
+				# 	print cell.indices
+				# exit()
+
+				# # right T1 transition
+				cells_r, edges_r = T1_right(cells, edges, i1, i2, cell_ids)
+				E_right = network.get_energy(vertices, cells_r, edges_r)
+				print E_right 
+				
+				# get minimum
+				# min_energy = np.minimum((E0, E_left, E_right))
+
+
+				# if current configuration is minimum
+
+				# else: replace cells and edges
+
+
+	return cells, edges
+
+
+
 
 def set_T1_left():
 	pass
 
 def set_T1_right():
 	pass
-
-
-
-
-
 
 
 

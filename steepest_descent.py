@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy as np
 from Network import Network
+from transition import *
 
 def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
@@ -35,6 +36,6 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 		t += delta_t
 
 		# # check for T1 transitions
-		cells, edges = network.T1(vertices, cells, edges, min_dist)
+		T1_transition(network, vertices, cells, edges, min_dist)
 		exit()
 	return t, energy, vertices, cells, edges
