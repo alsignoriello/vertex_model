@@ -87,7 +87,7 @@ edges = read_edges(edge_file)
 cells = build_cells(cell_indices, A0, P0)
 print "There are %d cells" % (len(cells))
 
-network = Network(L, vertices, cells, edges, parameters)
+network = Network(L, parameters)
 
 # # steepest descent
 epsilon = 10**-6

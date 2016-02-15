@@ -37,7 +37,7 @@ parameters - dictionary containing relevant parameter values
 class Network:
 
 
-	def __init__(self, L, vertices, cells, edges, parameters):
+	def __init__(self, L, parameters):
 		self.L = L
 		self.parameters = parameters
 
