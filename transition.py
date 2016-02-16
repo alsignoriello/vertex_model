@@ -36,6 +36,10 @@ Edge 8: i5 - i2
 Edge 9: i6 - i2
 
 
+* Currently, repetive defining indices during
+-> fix this
+
+
 
 """
 

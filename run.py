@@ -9,14 +9,23 @@ from plot import plot_network
 
 """
 
-build_network.py - initializes the vertex model
-
-builds cells
-builds network
-computes energy + forces in network
+run.py - runs vertex model simulation
+		initalizes vertex model
+		minimizes energy using steepest descent
+		plots the relaxed network
 
 author: Lexi Signoriello
 date: 	1/20/16
+
+
+
+Notes:
+The network should have vertices that each have exactly
+3 edges each
+
+Duplicate edges in reverse order in edge list
+
+Periodic Boundary Conditions
 
 
 """
@@ -72,7 +81,7 @@ parameters['delta_t'] = delta_t
 # Read Files
 # read in list of all vertices in network
 vertex_file = "network_vertices.txt"
-vertices = read_network_vertices(vertex_file)
+vertices = read_vertices(vertex_file)
 
 # read cell indices 
 cell_index_file = "cell_indices.txt"
@@ -83,15 +92,14 @@ cells = build_cells(cell_indices, A0, P0)
 print "There are %d cells" % (len(cells))
 
 # read edge list
-edge_file = "edge_indices.txt" 
+# edge_file = "edge_indices.txt" 
+edge_file = "edges.txt"
 edges = read_edges(edge_file)
-# print len(edges)
 
 network = Network(L, parameters)
 
 # # steepest descent
 epsilon = 10**-6
-
 
 vertices = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
