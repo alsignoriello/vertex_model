@@ -2,6 +2,8 @@
 import numpy as np
 from Network import Network
 from transition import *
+from parser import write_cell_indices
+from plot import plot_network
 
 def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
@@ -13,11 +15,15 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 	energy = []
 
 	# for T1 transition
-	min_dist = 0.3
+	min_dist = 0.2
+
+	L = network.L
 
 	# while forces are greater than epsilon
 	forces = epsilon**0.5
 	while np.sum(forces**2)**(0.5) > epsilon:
+
+		plot_network(vertices, cells, L, "movie/%f.jpg" % t)
 
 		# get energy for network
 		energy = network.get_energy(vertices, cells, edges)
@@ -36,7 +42,7 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 		t += delta_t
 
 		# # check for T1 transitions
-		T1_transition(network, vertices, cells, edges, min_dist)
-	
+		cells, edges = T1_transition(network, vertices, cells, edges, min_dist)
+
 
 	return vertices

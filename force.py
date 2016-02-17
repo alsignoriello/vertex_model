@@ -122,7 +122,6 @@ def F_actin_myosin(vertices, cells, gamma, L):
 				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
 				uvcc = unit_vector(vcc, vertex)
 
-
 				# get perimeter for this cell
 				p = cell.get_perim(vertices, L)
 

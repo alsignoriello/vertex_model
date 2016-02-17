@@ -56,10 +56,35 @@ def plot_network(vertices, cells, L, file):
 
 
 
+def plot_edges(vertices, edges, L):
+	plt.cla()
+	for vertex in vertices:
+		x = vertex[0]
+		y = vertex[1]
+		plt.scatter(x, y, c="c")
+
+	for edge in edges:
+		i1 = edge[0]
+		i2 = edge[1]
+		x1,y1 = vertices[i1]
+		x2,y2 = vertices[i2]
+		v1 = np.array((x1,y1))
+		v2 = np.array((x2,y2))
+		v2 = v1 + periodic_diff(v2, v1, L)
+		x2,y2 = v2
+		plt.plot([x1,x2],[y1,y2],c="k")
+
+	plt.axis([0,L[0],0,L[1]])
+	plt.show()
+	return
+
+
+
+
 
 # Plots to test T1 transition
-def plot_4_cells(vertices, cells, i1, i2, L):
-
+def plot_4_cells(vertices, cells, i1, i2, L, file, E):
+	plt.cla()
 	x1,y1 = vertices[i1]
 	x2,y2 = vertices[i2]
 	plt.scatter(x1,y1,color="r",marker="*")
@@ -74,7 +99,8 @@ def plot_4_cells(vertices, cells, i1, i2, L):
 			plt.plot([x1,x2], [y1,y2], color=colors[i])
 
 	plt.axis([0,L[0]+0.2,0,L[1]+0.2])
-	plt.show()
+	plt.title("Energy = %f" % E)
+	plt.savefig(file)
 	return
 
 def plot_6_indices(vertices, indices):

@@ -34,7 +34,7 @@ def E_adhesion(vertices, edges, tau , L):
 		i2 = edge[1]
 		v1 = vertices[i1]
 		vertex2 = vertices[i2]
-		v2 = vertex2 + periodic_diff(vertex2, v1, L)
+		v2 = v1 + periodic_diff(vertex2, v1, L)
 		dist = euclidean_distance(v1[0], v1[1], v2[0], v2[1])
 		e += tau * dist
 	return e

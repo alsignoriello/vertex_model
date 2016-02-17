@@ -5,7 +5,7 @@ from Cell import Cell
 """
 
 parser.py - defines functions to read and write relevant data
-for the system 
+
 
 author: Lexi Signoriello
 date: 1/22/16
@@ -41,8 +41,26 @@ def read_cells(cell_file):
 	return xs, ys, areas, perims
 
 def read_cell_indices(file):
-	indices = np.loadtxt(file, dtype=int)
+	# indices = np.loadtxt(file, dtype=int)
+	indices = []
+	f = open(file)
+	for line in f:
+		cell_indices = []
+		linesplit = line.strip().split("\t")
+		for i in linesplit:
+			cell_indices.append(int(i))
+		indices.append(cell_indices)
+	f.close()
 	return indices
+
+def write_cell_indices(cells, file):
+	f = open(file, "w+")
+	for cell in cells:
+		for i in cell.indices:
+			f.write("%d\t" % i)
+		f.write("\n")
+	f.close()
+	return 
 
 def build_cells(cell_indices, A0, P0):
 	cells = []

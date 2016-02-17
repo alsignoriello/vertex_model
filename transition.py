@@ -393,10 +393,9 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 		dist = euclidean_distance(v1[0], v1[1], v2[0], v2[1])
 
 		if dist < min_dist:
-			print "T1"
+			# print "T1", i1, i2 
 			cell_ids = get_4_cells(cells, i1, i2)
 			if -1 in cell_ids:
-				# print cell_ids
 				pass
 			else:
 				# find minimum configuration
@@ -407,36 +406,39 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 				# original configuration
 				cells_0, edges_0 = T1_0(cells, i1, i2, cell_ids, indices)
 				E0 = network.get_energy(vertices, cells_0, edges_0)
-				print E0
+				# print E0
 				# plot_4_cells(vertices, cells_0, i1, i2, L, "0.jpg", E0)
 
 				# left T1 transition 
 				cells_l, edges_l = T1_left(cells, i1, i2, cell_ids, indices)
 				E_left = network.get_energy(vertices, cells_l, edges_l)
-				print E_left
+				# print E_left
 				# plot_4_cells(vertices, cells_l, i1, i2, L, "l.jpg", E_left)
 
 				# # right T1 transition
 				cells_r, edges_r = T1_right(cells, i1, i2, cell_ids, indices)
 				E_right = network.get_energy(vertices, cells_r, edges_r)
-				print E_right 
+				# print E_right 
 				# plot_4_cells(vertices, cells_r, i1, i2, L, "r.jpg", E_right)
+
+				# if i1 == 18 and i2 == 26 and E0 < 1.4:
+				# 	plot_4_cells(vertices, cells_r, i1, i2, L, "18_r.jpg", E_right)
+				# 	plot_4_cells(vertices, cells_l, i1, i2, L, "18_l.jpg", E_left)
+				# 	plot_4_cells(vertices, cells_0, i1, i2, L, "18_0.jpg", E0)
+				# 	exit()
 
 				# get minimum
 				min_energy = np.min((E0, E_left, E_right))
 				min_i = np.argmin((E0, E_left, E_right))
-
-				# do nothing - same configuration
+				# # do nothing - same configuration
 				if min_i == 0:
 					pass
 
-				# if min_i == 1:
-				# set_T1_left(cells, cells_l, cell_ids, edges, indices)
-				# np.savetxt("edges2.txt", edges, fmt="%d")
+				if min_i == 1:
+					set_T1_left(cells, cells_l, cell_ids, edges, indices)
 
-				# if min_i == 2:
-				set_T1_right(cells, cells_r, cell_ids, edges, indices)
-				exit()
+				if min_i == 2:
+					set_T1_right(cells, cells_r, cell_ids, edges, indices)
 
 	return cells, edges
 

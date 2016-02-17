@@ -5,7 +5,7 @@ from Network import Network
 from parser import *
 from steepest_descent import steepest_descent
 import matplotlib.pyplot as plt
-from plot import plot_network
+from plot import plot_network, plot_edges
 
 """
 
@@ -84,7 +84,8 @@ vertex_file = "network_vertices.txt"
 vertices = read_vertices(vertex_file)
 
 # read cell indices 
-cell_index_file = "cell_indices.txt"
+# cell_index_file = "cell_indices.txt"
+cell_index_file = "cells_T1.txt"
 cell_indices = read_cell_indices(cell_index_file)
 
 # Build cells
@@ -92,18 +93,21 @@ cells = build_cells(cell_indices, A0, P0)
 print "There are %d cells" % (len(cells))
 
 # read edge list
-# edge_file = "edge_indices.txt" 
-edge_file = "edges.txt"
+# edge_file = "edges.txt"
+edge_file = "edges_T1.txt"
 edges = read_edges(edge_file)
+
+
+# plot_network(vertices, cells, L, "hex_network_T0.jpg")
 
 network = Network(L, parameters)
 
 # # steepest descent
-epsilon = 10**-6
+epsilon = 10**-2
 
 vertices = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-plot_network(vertices, cells, L, "hex_network.jpg")
+plot_network(vertices, cells, L, "hex_network_T1.jpg")
 
 
 
