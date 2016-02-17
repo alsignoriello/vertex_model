@@ -36,16 +36,59 @@ Edge 8: i5 - i2
 Edge 9: i6 - i2
 
 
-* Currently, repetive defining indices during
--> fix this
-
-
 
 """
 
 
+
+def get_6_indices(cells, i1, i2, cell_ids):
+	cells_copy = []
+	for i in cell_ids:
+		cell = copy.deepcopy(cells[i])
+		cells_copy.append(cell)
+
+	# define cells
+	cell_0 = cells_copy[0]
+	cell_1 = cells_copy[1]
+	cell_2 = cells_copy[2]
+	cell_3 = cells_copy[3]
+
+	# Find indices wrt Cell 1
+	pos = int(np.where(cell_1.indices == i1)[0])
+	# i3: cell 1 before i1
+	if pos == 0:
+		i_left = len(cell_1.indices) - 1
+	else:
+		i_left = pos - 1
+	i3 = cell_1.indices[i_left]
+	# i4: cell 1 after i1
+	if pos == len(cell_1.indices) - 1:
+		i_right = 0
+	else:
+		i_right = pos + 1
+	i4 = cell_1.indices[i_right]
+	# i5: cell 3 before i2
+	pos = int(np.where(cell_3.indices == i2)[0])
+	if pos == 0:
+		i_left = len(cell_3.indices) - 1
+	else: 
+		i_left = pos - 1
+	i5 = cell_3.indices[i_left]
+	# i6: cell 3 after i2
+	if pos == len(cell_3.indices) - 1:
+		i_right = 0
+	else:
+		i_right = pos + 1
+	i6 = cell_3.indices[i_right]
+
+	indices = [i1,i2,i3,i4,i5,i6]
+
+	return indices
+
+
+
 # get cells and edges associated with short bond length
-def T1_0(cells, edges, i1, i2, cell_ids):
+def T1_0(cells, i1, i2, cell_ids, indices):
 	cells_0 = []
 
 	for i in cell_ids:
@@ -60,42 +103,12 @@ def T1_0(cells, edges, i1, i2, cell_ids):
 	cell_2 = cells_0[2]
 	cell_3 = cells_0[3]
 
-	# Find indices wrt Cell 1
-	pos = int(np.where(cell_1.indices == i1)[0])
-
-	# i3: cell 1 before i1
-	if pos == 0:
-		i_left = len(cell_1.indices) - 1
-	else:
-		i_left = pos - 1
-
-	i3 = cell_1.indices[i_left]
-
-	# i4: cell 1 after i1
-	if pos == len(cell_1.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-
-	i4 = cell_1.indices[i_right]
-
-	# i5: cell 3 before i2
-	pos = int(np.where(cell_3.indices == i2)[0])
-	if pos == 0:
-		i_left = len(cell_3.indices) - 1
-	else: 
-		i_left = pos - 1
-
-	i5 = cell_3.indices[i_left]
-
-	# i6: cell 3 after i2
-	if pos == len(cell_3.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-
-	i6 = cell_3.indices[i_right]
-
+	i1 = indices[0]
+	i2 = indices[1]
+	i3 = indices[2]
+	i4 = indices[3]
+	i5 = indices[4]
+	i6 = indices[5]
 
 	edges_0 = np.zeros((10,2))
 	# Edge 0: i1 - i2
@@ -141,7 +154,7 @@ def T1_0(cells, edges, i1, i2, cell_ids):
 	return cells_0, edges_0
 
 # get cells and edges associated with 
-def T1_left(cells, edges, i1, i2, cell_ids):
+def T1_left(cells, i1, i2, cell_ids, indices):
 
 	# Cells
 	cells_l = []
@@ -156,38 +169,13 @@ def T1_left(cells, edges, i1, i2, cell_ids):
 	cell_2 = cells_l[2]
 	cell_3 = cells_l[3]
 
-
-	# Find indices wrt Cell 1
-	pos = int(np.where(cell_1.indices == i1)[0])
-
-	# i3: cell 1 before i1
-	if pos == 0:
-		i_left = len(cell_1.indices) - 1
-	else:
-		i_left = pos - 1
-	i3 = cell_1.indices[i_left]
-
-	# i4: cell 1 after i1
-	if pos == len(cell_1.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-	i4 = cell_1.indices[i_right]
-
-	# i5: cell 3 before i2
-	pos = int(np.where(cell_3.indices == i2)[0])
-	if pos == 0:
-		i_left = len(cell_3.indices) - 1
-	else: 
-		i_left = pos - 1
-	i5 = cell_3.indices[i_left]
-
-	# i6: cell 3 after i2
-	if pos == len(cell_3.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-	i6 = cell_3.indices[i_right]
+	# define indices
+	i1 = indices[0]
+	i2 = indices[1]
+	i3 = indices[2]
+	i4 = indices[3]
+	i5 = indices[4]
+	i6 = indices[5]
 
 	# Cell 0: remove i2
 	pos = int(np.where(cell_0.indices == i2)[0])
@@ -260,7 +248,7 @@ def T1_left(cells, edges, i1, i2, cell_ids):
 
 	return cells_l, edges_l
 
-def T1_right(cells, edges, i1, i2, cell_ids):
+def T1_right(cells, i1, i2, cell_ids, indices):
 
 	cells_r = []
 	for i in cell_ids:
@@ -273,37 +261,13 @@ def T1_right(cells, edges, i1, i2, cell_ids):
 	cell_2 = cells_r[2]
 	cell_3 = cells_r[3]
 
-	# Find indices wrt Cell 1
-	pos = int(np.where(cell_1.indices == i1)[0])
-
-	# i3: cell 1 before i1
-	if pos == 0:
-		i_left = len(cell_1.indices) - 1
-	else:
-		i_left = pos - 1
-	i3 = cell_1.indices[i_left]
-
-	# i4: cell 1 after i1
-	if pos == len(cell_1.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-	i4 = cell_1.indices[i_right]
-
-	# i5: cell 3 before i2
-	pos = int(np.where(cell_3.indices == i2)[0])
-	if pos == 0:
-		i_left = len(cell_3.indices) - 1
-	else: 
-		i_left = pos - 1
-	i5 = cell_3.indices[i_left]
-
-	# i6: cell 3 after i2
-	if pos == len(cell_3.indices) - 1:
-		i_right = 0
-	else:
-		i_right = pos + 1
-	i6 = cell_3.indices[i_right]
+	# define indices
+	i1 = indices[0]
+	i2 = indices[1]
+	i3 = indices[2]
+	i4 = indices[3]
+	i5 = indices[4]
+	i6 = indices[5]
 
 	# Cell 0: remove i1
 	pos = int(np.where(cell_0.indices == i1)[0])
@@ -437,44 +401,109 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 			else:
 				# find minimum configuration
 
+				# 6 indices for vertices involved in transition
+				indices = get_6_indices(cells, i1, i2, cell_ids)
+
 				# original configuration
-				cells_0, edges_0 = T1_0(cells, edges, i1, i2, cell_ids)
+				cells_0, edges_0 = T1_0(cells, i1, i2, cell_ids, indices)
 				E0 = network.get_energy(vertices, cells_0, edges_0)
 				print E0
+				# plot_4_cells(vertices, cells_0, i1, i2, L, "0.jpg", E0)
 
 				# left T1 transition 
-				cells_l, edges_l = T1_left(cells, edges, i1, i2, cell_ids)
+				cells_l, edges_l = T1_left(cells, i1, i2, cell_ids, indices)
 				E_left = network.get_energy(vertices, cells_l, edges_l)
 				print E_left
+				# plot_4_cells(vertices, cells_l, i1, i2, L, "l.jpg", E_left)
 
 				# # right T1 transition
-				cells_r, edges_r = T1_right(cells, edges, i1, i2, cell_ids)
+				cells_r, edges_r = T1_right(cells, i1, i2, cell_ids, indices)
 				E_right = network.get_energy(vertices, cells_r, edges_r)
 				print E_right 
+				# plot_4_cells(vertices, cells_r, i1, i2, L, "r.jpg", E_right)
 
 				# get minimum
 				min_energy = np.min((E0, E_left, E_right))
 				min_i = np.argmin((E0, E_left, E_right))
+
+				# do nothing - same configuration
 				if min_i == 0:
 					pass
 
-				if min_i == 1:
-					pass
+				# if min_i == 1:
+				# set_T1_left(cells, cells_l, cell_ids, edges, indices)
+				# np.savetxt("edges2.txt", edges, fmt="%d")
 
-				if min_i == 2:
-					pass
-
+				# if min_i == 2:
+				set_T1_right(cells, cells_r, cell_ids, edges, indices)
+				exit()
 
 	return cells, edges
 
 
+def set_T1_left(cells, cells_l, cell_ids, edges, indices):
+	# set new cell indices
+	for i,cell in enumerate(cells_l):
+		cells[cell_ids[i]].indices = cell.indices
+
+	# set new edges
+	i1 = indices[0]
+	i2 = indices[1]
+	i3 = indices[2]
+	i5 = indices[4]
+	for i,edge in enumerate(edges):
+
+		# i1 - i3 becomes i2 - i3
+		if edge[0] == i1 and edge[1] == i3:
+			edges[i][0] = i2
+	
+		# i2 - i5 becomes i1 - i5
+		if edge[0] == i2 and edge[1] == i5:
+			edges[i][0] = i1
+
+		# i3 - i1 becomes i3 - i2
+		if edge[0] == i3 and edge[1] == i1:
+			edges[i][1] = i2
+
+		# i5 - i2 becomes i5 - i1
+		if edge[0] == i5 and edge[1] == i2:
+			edges[i][1] = i1
+	
+	return 
 
 
-def set_T1_left():
-	pass
+def set_T1_right(cells, cells_r, cell_ids, edges, indices):
 
-def set_T1_right():
-	pass
+	# set new cell indices
+	for i,cell in enumerate(cells_r):
+		cells[cell_ids[i]].indices = cell.indices
+	
+
+	# set new edges
+	i1 = indices[0]
+	i2 = indices[1]
+	i4 = indices[3]
+	i6 = indices[5]
+
+	for i,edge in enumerate(edges):
+
+		# i1 - i4 becomes i2 - i4
+		if edge[0] == i1 and edge[1] == i4:
+			edges[i][0] = i2
+
+		# i2 - i6 becomes i1 - i6
+		if edge[0] == i2 and edge[1] == i6:
+			edges[i][0] = i1
+
+		# i4 - i1 becomes i4 - i2
+		if edge[0] == i4 and edge[1] == i1:
+			edges[i][1] = i2
+
+		# i6 - i2 becomes i6 - i1
+		if edge[0] == i6 and edge[1] == i2:
+			edges[i][1] = i1
+
+	return 
 
 
 
