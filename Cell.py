@@ -51,23 +51,23 @@ class Cell:
 		# moving vertices to maintain periodic boundaries
 		cell_vertices = []
 
-		# align everything to first vertex
+		# align everything to previous vertex
 		x0,y0 = vertices[indices[0]]
 		v0 = np.array((x0,y0))
+		v_last = v0
 
 		for i in indices:
-			# print vertices 
 			x,y = vertices[i]
 			v = np.array((x,y))
-			v_next = v0 + periodic_diff(v, v0, L)
+			v_next = v_last + periodic_diff(v, v_last, L)
 			x,y = v_next
 			cell_vertices.append((x,y))
+			v_last = np.array((x,y))
 		return cell_vertices
 
 	def get_area(self, vertices, L):
 		cell_vertices = self.get_cell_vertices(vertices, L)
 		a = area(cell_vertices)
-		# print a
 		return a 
 
 	def get_perim(self, vertices, L):
