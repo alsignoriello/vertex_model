@@ -65,12 +65,15 @@ P0 = 0.2
 # parameters['P0'] = P0
 
 # # gamma - actin myosin contractility
-gamma = 0.04 * ka * A0
+gamma = 0.001
+# gamma = 0.04 * ka * A0 # hexagonal network
+# gamma = 0.1 * ka * A0 # soft network
 parameters['gamma'] = gamma
 
 # # tau - line tension between cell
 # linear coefficient 
-tau = 0.12 * ka * (A0**(3/2))
+tau = 0.12 * ka * (A0**(3/2)) # hexagonal network
+# tau = -0.85 * ka * A0**(3/2) # soft network
 # tau = 0.01
 parameters['tau'] = tau
 
@@ -103,11 +106,11 @@ edges = read_edges(edge_file)
 network = Network(L, parameters)
 
 # # steepest descent
-epsilon = 10**-2
+epsilon = 10**-6
 
 vertices = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-plot_network(vertices, cells, L, "hex_network_T1.jpg")
+plot_network(vertices, cells, L, "hex_network_2.jpg")
 
 
 

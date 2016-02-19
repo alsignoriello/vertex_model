@@ -421,11 +421,11 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 				# print E_right 
 				# plot_4_cells(vertices, cells_r, i1, i2, L, "r.jpg", E_right)
 
-				# if i1 == 18 and i2 == 26 and E0 < 1.4:
-				# 	plot_4_cells(vertices, cells_r, i1, i2, L, "18_r.jpg", E_right)
-				# 	plot_4_cells(vertices, cells_l, i1, i2, L, "18_l.jpg", E_left)
-				# 	plot_4_cells(vertices, cells_0, i1, i2, L, "18_0.jpg", E0)
-				# 	exit()
+				if i1 == 18 and i2 == 26 and E0 < 0.2:
+					plot_4_cells(vertices, cells_r, i1, i2, L, "18_r_2.jpg", E_right)
+					plot_4_cells(vertices, cells_l, i1, i2, L, "18_l_2.jpg", E_left)
+					plot_4_cells(vertices, cells_0, i1, i2, L, "18_0_2.jpg", E0)
+					exit()
 
 				# get minimum
 				min_energy = np.min((E0, E_left, E_right))

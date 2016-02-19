@@ -23,7 +23,7 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 	forces = epsilon**0.5
 	while np.sum(forces**2)**(0.5) > epsilon:
 
-		plot_network(vertices, cells, L, "movie/%f.jpg" % t)
+		# plot_network(vertices, cells, L, "movie2/%f.jpg" % t)
 
 		# get energy for network
 		energy = network.get_energy(vertices, cells, edges)
