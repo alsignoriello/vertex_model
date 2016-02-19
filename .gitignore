@@ -7,5 +7,5 @@ T1_test/*
 generate_voronoi.py
 *.jpg
 conjugate_gradient.py
-test_data/*
-movie/*.jpg
+movie/*
+movie2/*
