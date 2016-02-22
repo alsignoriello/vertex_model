@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import numpy as np
 import matplotlib.pyplot as plt
+from parser import build_cells
+from plot import plot_network
+import random
 
 """
 
@@ -25,6 +28,8 @@ ny = number of hexagons in y direction
 The hexagons are generated flat topped
 	* can be transformed to be flat sided with rotation
 
+NOTE: numpy matrix == [x,y]
+	  Grid matrix  == [y,x]
 
 
 """
@@ -39,28 +44,23 @@ The hexagons are generated flat topped
 # 1 height	
 # http://www.redblobgames.com/grids/hexagons/	
 def generate_grid(nx, ny, w, h):
-	# print nx, ny
-	# print w,h
+
 	# length of box on x axis
 	lx = (nx / 2.) * 1.5 * w
 
 	# length of box on y axis
 	ly = ny * h 
 
-	# print lx, ly
-
 	# generate grid of coordinates
 	xs = np.linspace(0., lx, 3 * nx + 1)
 	xs = xs[:-1] # periodic boundary condition
-	# print xs
 
 	ys = np.linspace(0., ly, 2 * ny + 1)
 	ys = ys[:-1]  # periodic boundary condition
-	# print ys
 
 	xx, yy = np.meshgrid(xs, ys)
 
-	L = [lx,ly]
+	L = np.array((lx,ly))
 
 	return xx, yy, L
 
@@ -68,9 +68,8 @@ def generate_grid(nx, ny, w, h):
 def plot_grid(xx, yy, L):
 	plt.scatter(xx, yy)
 	plt.axis([0, L[0], 0, L[1]])
-	# plt.show()
+	plt.show()
 	return 
-
 
 
 def trace_hex_vertices(nx, ny, xx, yy, w, h, L):
@@ -85,6 +84,7 @@ def trace_hex_vertices(nx, ny, xx, yy, w, h, L):
 
 	# list of x,y vertices
 	vertices = np.zeros((n_vertices, 2))
+	vertices.fill(-1)
 
 	# left corner indices
 	x_left_0 = []
@@ -99,19 +99,21 @@ def trace_hex_vertices(nx, ny, xx, yy, w, h, L):
 	curr_v = 0 # current vertex
 	hex_counter = 0
 	for i in range(0, 2 * ny):
-
+		iy = i
 		if i % 2 == 0:
 			for j in x_left_0:
-				indices, curr_v = trace_hexagon(xx, yy, vertices, i, j, curr_v)
+				ix = j
+				indices = trace_hexagon(xx, yy, vertices, ix, iy, L)
 				hex_indices[hex_counter, :] = indices 
 				hex_counter += 1
 		else:
 			for j in x_left_1:
-				indices, curr_v = trace_hexagon(xx, yy, vertices, i, j, curr_v)
+				ix = j
+				indices = trace_hexagon(xx, yy, vertices, ix, iy, L)
 				hex_indices[hex_counter, :] = indices 
 				hex_counter += 1				
 
-	return 
+	return vertices, hex_indices
 
 
 def periodic_indices(index, length):
@@ -121,256 +123,115 @@ def periodic_indices(index, length):
 		return 0
 	return index
 
+		
+
+# if vertex is already in list
+# return the index of the vertex
+# else
+# add vertex to vertices
+# return index
+def pos_in_list(vertices, x, y):
+
+	for j,v in enumerate(vertices):
+		if v[0] == x and v[1] == y:
+			return j
+		if v[0] == -1 and v[1] == -1:
+			vertices[j][0] = x
+			vertices[j][1] = y
+			return j
+	# should always return an index
+	# Error if not
+	return -1
+
+
 # trace hexagon vertices -- counter-clockwise
 # starting from ix, iy
 # add vertices to list if they aren't there already
-def trace_hexagon(xx, yy, vertices, ix, iy, v_index):
+def trace_hexagon(xx, yy, vertices, ix, iy, L):
 	
+	# counter-clockwise indices for vertices in hexagon
 	indices = np.zeros(6)
 
 	# necessary for periodic bounary condition
 	len_x = len(xx[0,:])
 	len_y = len(yy[:,0])
-	# print len_x, len_y
 
 	# counter-clockwise order
-	# Index 0 = left corner index
-	print ix, iy 
-	vx = xx[ix,iy]
-	vy = yy[ix,iy]
-	print vx, vy
+	# Index 0 = left corner index 
+	vx = xx[iy,ix]
+	vy = yy[iy,ix]
+	pos = pos_in_list(vertices, vx, vy)
+	indices[0] = pos
 
 	# Index 1 = right 1, down 1
 	ix_1 = periodic_indices(ix + 1, len_x)
 	iy_1 = periodic_indices(iy - 1, len_y)
-	print ix_1, iy_1
-	print xx[ix_1,iy_1]
-	print yy[ix_1,iy_1]
+	vx = xx[iy_1,ix_1]
+	vy = yy[iy_1,ix_1]
+	pos = pos_in_list(vertices, vx,vy)
+	indices[1] = pos
 
 	# Index 2 = right 2
 	ix_2 = periodic_indices(ix_1 + 2, len_x)
 	iy_2 = periodic_indices(iy_1, len_y)
-	print ix_2, iy_2
+	vx = xx[iy_2, ix_2]
+	vy = yy[iy_2, ix_2]
+	pos = pos_in_list(vertices, vx, vy)
+	indices[2] = pos
 
 	# Index 3 = up 1, right 1
 	ix_3 = periodic_indices(ix_2 + 1, len_x)
 	iy_3 = periodic_indices(iy_2 + 1, len_y)
-	print ix_3, iy_3
+	vx = xx[iy_3, ix_3]
+	vy = yy[iy_3, ix_3]
+	pos = pos_in_list(vertices, vx, vy)
+	indices[3] = pos
 
 	# Index 4 = up 1, left 1
 	ix_4 = periodic_indices(ix_3 - 1, len_x)
 	iy_4 = periodic_indices(iy_3 + 1, len_y)
-	print ix_4, iy_4
+	vx = xx[iy_4, ix_4]
+	vy = yy[iy_4, ix_4]
+	pos = pos_in_list(vertices, vx, vy)
+	indices[4] = pos
 
 	# Index 5 = left 2
 	ix_5 = periodic_indices(ix_4 - 2, len_x)
 	iy_5 = periodic_indices(iy_4, len_y)
-	print ix_5, iy_5
+	vx = xx[iy_5, ix_5]
+	vy = yy[iy_5, ix_5]
+	pos = pos_in_list(vertices, vx, vy)
+	indices[5] = pos
 
 	# Index 6 == Index 0 = left 1, down 1
 	ix_6 = periodic_indices(ix_5 - 1, len_x)
 	iy_6 = periodic_indices(iy_5 - 1, len_y)
-	print ix_6, iy_6
+	vx = xx[iy_6, ix_6]
+	vy = yy[iy_6, ix_6]
+	if ix_6 != ix and iy_6 != iy:
+		print "Did not cycle back to vertex"
 
-	# indices = [(ix,iy),(ix_1,iy_1), (ix_2,iy_2), (ix_3,iy_3),
-	# 			(ix_4,iy_4), (ix_5,iy_5)]
-
-	plot_hexagon(vertices)
-
-
-	exit()
-
-	return
-
-def plot_hexagon(vertices):
-	for v1,v2 in zip(vertices, vertices[1:] + [vertices[0]]):
-		# print i1,i2
-		x1 = v1[0]
-		y1 = v1[1]
-		x2 = v2[0]
-		y2 = v2[0]
-		plt.plot([x1,x2],[y1,y2],color="k")
-	plt.show()
-	return
+	return indices
 
 
-	# # # find position of vertex in list
-	# # pos = pos_in_list(vertices, vx, vy)
 
-	# # # if not in list, add it 
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[0] = v_index
-	# # 	v_index += 1
-
-	# # # Index 1
-	# # # diagonal down right
-	# # ix = ix + 1
-	# # iy = iy - 1
-
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # # # if this vertex is in list
-	# # pos = pos_in_list(vertices, vx, vy)
-	# # print pos
-
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[1] = v_index
-	# # 	v_index += 1
-
-	# # # Index 2
-	# # # right 0.5 w = right 2 indices
-	# # ix = ix + 2
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # # # if this vertex is in list
-	# # pos = pos_in_list(vertices, vx, vy)
-
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[2] = v_index
-	# # 	v_index += 1
-
-
-	# # # Index 3
-	# # # diagonal up right
-	# # ix = ix + 1
-	# # iy = iy + 1
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # # # if this vertex is in list
-	# # pos = pos_in_list(vertices, vx, vy)
-
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[3] = v_index
-	# # 	v_index += 1
-
-
-	# # # Index 4
-	# # # diagonal up left
-	# # ix = ix - 1
-	# # iy = iy + 1
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # # # if this vertex is in list
-	# # pos = pos_in_list(vertices, vx, vy)
-
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[4] = v_index
-	# # 	v_index += 1
-
-	# # # Index 5
-	# # # left 0.5 w = left 2 indices
-	# # ix = ix - 2
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # # # if this vertex is in list
-	# # pos = pos_in_list(vertices, vx, vy)
-
-	# # if pos == -1:
-	# # 	vertices[v_index, 0] = xx[ix,iy]
-	# # 	vertices[v_index, 1] = yy[ix,iy]
-	# # 	indices[5] = v_index
-	# # 	v_index += 1
-
-
-	# # # Index 6 should be index 0
-	# # # Check this is true
-	# # # Else: throw error
-	# # # diagonal down left
-	# # ix = ix - 1
-	# # iy = iy - 1
-	# # vx = xx[ix,iy]
-	# # vy = yy[ix,iy]
-
-	# # # if this vertex = length,
-	# # # make it equal to 0 to wrap around
-	# # if vx == L[0]:
-	# # 	vx = 0.
-	# # if vy == L[1]:
-	# # 	vy = 0.
-
-
-	# # if vx != vertices[indices[0]][0]:
-	# # 	print "fuck"
-	# # if vy != vertices[indices[0]][1]:
-	# # 	print "fuck"
-
-
-	# # return indices, v_index
-	# return 
-
-
-		
-def pos_in_list(vertices, x, y):
-	pos = -1 
-	for j,v in enumerate(vertices):
-		if v[0] == x and v[1] == y:
-			return j
-	return pos
-
-
+# Make polygons = area != 1
 def scale_area():
 	pass
 
 
-def gaussian_noise():
+# shift vertices randomly
+def shift_vertices(vertices, s):
+	for i,(x,y) in enumerate(vertices):
+		x += random.uniform(-s/2.,s/2.)
+		y += random.uniform(-s/2.,s/2.)
+		vertices[i,0] = x
+		vertices[i,1] = y
+	return vertices
+
+
+def write_edges(indices):
 	pass
-
-
 
 
 
@@ -384,23 +245,20 @@ def main():
 		nx += 1
 
 	# Number of hexagons across y axis
-	ny = 3
-	# if ny % 2 != 0:
-	# 	print "Number of hexagons on y axis should be a multiple of 2"
-	# 	ny += 1
+	ny = 4
 
-	# # side length of hexagon such that area = 1
-	# s = (2)**(0.5) / (3 * (3)**0.5)**(0.5)
+	# side length of hexagon such that area = 1
+	s = (2)**(0.5) / (3 * (3)**0.5)**(0.5)
 
-	# # width
-	# w = 2. * s
+	# width
+	w = 2. * s
 
-	# # height
-	# h = (3**(0.5) / 2.) * w
+	# height
+	h = (3**(0.5) / 2.) * w
 
-	# 1 for testing purposes
-	w = 1.
-	h = 1.
+	# # 1 for testing purposes
+	# w = 1.
+	# h = 1.
 
 	# generate correctly spaced points on the grid
 	# will be more hexagons later due to periodic boundaries
@@ -408,31 +266,35 @@ def main():
 
 
 	# plot coordinates 
-	plot_grid(xx, yy, L)
+	# plot_grid(xx, yy, L)
 
 	# trace vertices for hexagons
 	# return list of vertices
 	# list of cell indices in counter-clockwise order
-	trace_hex_vertices(nx, ny, xx, yy, w, h, L)
+	vertices, hex_indices = trace_hex_vertices(nx, ny, xx, yy, w, h, L)
 
-	# plot hexagons 
-	# plot_hexagons(xx, yy, L)
+	# build cells
+	cells = build_cells(hex_indices, 0.65, 3)
 
-	# scale the area 
-
+	# scale the area to not be = 1
+	scale_area()
 
 	# add noise
+	# pass side length so shift is reasonable
+	vertices = shift_vertices(vertices, s)
 
+	# plot network
+	plot_network(vertices, cells, L, "hex_test.jpg")
 
 	# write vertices
-
+	np.savetxt("hex_vertices.txt", vertices)
 
 	# write cells
+	np.savetxt("hex_indices.txt", hex_indices, fmt="%d")
 
 
 	# write edges
-
-
+	write_edges(hex_indices)
 
 
 
@@ -440,70 +302,3 @@ if __name__ == "__main__":
 	main()
 
 
-
-
-# def plot_hexagons(xx, yy, L):
-# 	print xx.shape
-# 	print yy.shape
-
-# 	# Polygon 1
-
-# 	# Height 0
-# 	x1 = xx[0,1]
-# 	x2 = xx[0,2]
-# 	y1 = yy[0,1]
-# 	y2 = yy[0,2]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-# 	x1 = xx[0,2]
-# 	x2 = xx[0,3]
-# 	y1 = yy[0,2]
-# 	y2 = yy[0,3]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-	
-# 	# Height 1 = intervals of 2
-# 	x1 = xx[2,1]
-# 	x2 = xx[2,2]
-# 	y1 = yy[2,1]
-# 	y2 = yy[2,2]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-# 	x1 = xx[2,2]
-# 	x2 = xx[2,3]
-# 	y1 = yy[2,2]
-# 	y2 = yy[2,3]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-# 	# Side 1
-# 	x1 = xx[0,1]
-# 	x2 = xx[1,0]
-# 	y1 = yy[0,1]
-# 	y2 = yy[1,0]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-# 	# Side 2
-# 	x1 = xx[2,1]
-# 	x2 = xx[1,0]
-# 	y1 = yy[2,1]
-# 	y2 = yy[1,0]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-	
-# 	# Side 3
-# 	x1 = xx[0,3]
-# 	x2 = xx[1,4]
-# 	y1 = yy[0,3]
-# 	y2 = yy[1,4]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-# 	# Side 4
-# 	x1 = xx[2,3]
-# 	x2 = xx[1,4]
-# 	y1 = yy[2,3]
-# 	y2 = yy[1,4]
-# 	plt.plot([x1,x2],[y1,y2],color="m")
-
-
-# 	plt.show()
-
-# 	return

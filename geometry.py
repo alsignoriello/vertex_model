@@ -66,12 +66,12 @@ def euclidean_distance(x0, y0, x1, y1):
 	
 
 # Difference with respect to periodic boundaries
-def periodic_diff(v1,v2,L):
+def periodic_diff(v1, v2, L):
 	return ((v1 - v2 + L/2) % L) - L/2
 
 
 # get unit vector
-def unit_vector(v1,v2):
+def unit_vector(v1, v2):
 	vector = v1 - v2
 	dist = euclidean_distance(v1[0], v1[1], v2[0],v2[1])
 	uv = vector / dist
