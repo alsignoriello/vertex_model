@@ -35,7 +35,6 @@ NOTE: numpy matrix == [x,y]
 """
 
 
-
 # hexagonal grid should be spaced as such:
 # 0.5 height on y axis
 # 0.25 width on x axis
@@ -264,13 +263,12 @@ def main():
 	# will be more hexagons later due to periodic boundaries
 	xx, yy, L = generate_grid(nx, ny, w, h)
 
-
 	# plot coordinates 
 	# plot_grid(xx, yy, L)
 
 	# trace vertices for hexagons
-	# return list of vertices
-	# list of cell indices in counter-clockwise order
+	# return list of all vertices in network
+	# list of cell indices in counter-clockwise order for every hexagon 
 	vertices, hex_indices = trace_hex_vertices(nx, ny, xx, yy, w, h, L)
 
 	# build cells
@@ -292,10 +290,8 @@ def main():
 	# write cells
 	np.savetxt("hex_indices.txt", hex_indices, fmt="%d")
 
-
 	# write edges
 	write_edges(hex_indices)
-
 
 
 if __name__ == "__main__":
