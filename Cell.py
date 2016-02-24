@@ -13,7 +13,11 @@ date: 	1/19/16
 vertices - 	list of all vertices in the network
 [(x0,y0), (x1,y1) .... (xNvertices,yNvertices)]
 
-cell_vertices - list of vertices in current cell
+indices - list of indices pointing to cell vertices
+
+cell_vertices - list of vertices in current cell 
+* takes into account periodic boundary conditions when building
+from indices
 [(x0,y0), (x1,y1) ... (xNsides,yNsides)]
 
 
