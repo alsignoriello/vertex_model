@@ -100,6 +100,10 @@ def rand_theta():
 
 	return uv
 
+
+
+
+''' MAY NEED TO ADAPT DATA STRUCTURES '''
 # get angle assuming vertex is p1
 # http://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
 def getAngle(p1,p2,p3):
@@ -114,3 +118,24 @@ def getAngle(p1,p2,p3):
 			print "Domain Error"
 			pass
 	return radian
+
+
+# check if counter-clockwise
+def checkCounterClockwise(polygon):
+	sumEdges = 0
+	for i,(x,y) in enumerate(polygon):
+		if i == 0:
+			x0 = x
+			y0 = y
+		if i + 1 != len(polygon):
+			x2,y2 = polygon[i+1]
+		if i+1 == len(polygon):
+			x2 = x0
+			y2 = y0	
+
+		sumEdges += float(x2 - x) / float(y2 + y)
+
+	if sumEdges > 0:
+		return True
+	else:
+		return False
