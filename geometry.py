@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy as np
-from math import sqrt
+from math import sqrt, pi, sin, cos
+
 
 """ 
 
@@ -73,4 +74,28 @@ def unit_vector(v1, v2):
 	vector = v1 - v2
 	dist = euclidean_distance(v1[0], v1[1], v2[0],v2[1])
 	uv = vector / dist
+	return uv
+
+
+# assumes 2D
+def magnitude(v):
+	return (v[0]**2 + v[1]**2)**(0.5)
+
+
+# generate random angle theta
+def rand_theta():
+		
+	# generate random number between -pi - pi
+	xa = np.random.uniform(-pi, pi)
+	ya = np.random.uniform(-pi, pi)
+	
+	# transform to angle
+	x = sin(xa)
+	y = cos(ya)
+
+	# transform to unit vector
+	v1 = np.array([x,y])
+	v2 = np.array([0,0])
+	uv = unit_vector(v1,v2)
+
 	return uv
