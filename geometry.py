@@ -99,3 +99,18 @@ def rand_theta():
 	uv = unit_vector(v1,v2)
 
 	return uv
+
+# get angle assuming vertex is p1
+# http://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
+def getAngle(p1,p2,p3):
+	radian = 0
+	p12 = sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+	p13 = sqrt((p1[0]-p3[0])**2 + (p1[1]-p3[1])**2)
+	p23 = sqrt((p2[0]-p3[0])**2 + (p2[1]-p3[1])**2)
+	if p12 != 0 and p13 != 0:
+		try:
+			radian = acos( (p12**2 + p13**2 - p23**2)/(2*p12*p13) )
+		except ValueError:
+			print "Domain Error"
+			pass
+	return radian
