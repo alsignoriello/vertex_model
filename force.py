@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from geometry import periodic_diff, unit_vector
-
+from geometry import periodic_diff, unit_vector, rand_theta
 
 """
 
@@ -145,6 +144,66 @@ def F_adhesion(vertices, edges, tau, L):
 		forces[i1,:] -= tau * uv
 
 	return forces
+
+
+# Force to move vertices of cells in particular direction
+def F_motility(vertices, cells):
+
+	n_vertices = len(vertices)
+	forces = np.zeros((n_vertices, 2))
+
+	for cell in cells:
+		cell.theta = rand_theta()
+
+	# find neighbors for every cell
+	# defined as any two cells that share a vertex
+	avg_thetas = np.zeros((len(cells),2))
+	neighbor_count = np.ones(len(cells))
+
+	for i,cell in enumerate(cells):
+		avg_thetas[i,:] += cell.theta
+		for j,cell2 in enumerate(cells):
+			if i != j:
+				a = cell.indices
+				b = cell2.indices
+				if any(k in a for k in b) == True:
+					avg_thetas[i,:] += cell2.theta
+					neighbor_count[i] += 1
+
+
+	psi = 0.1
+
+	for i,cell in enumerate(cells):
+		xn = np.random.uniform(-1,1)
+		yn = np.random.uniform(-1,1)
+		n = np.array((xn,yn))
+
+		cell.theta = psi * (cell.theta - (avg_thetas[i,:] / neighbor_count[i])) + n
+
+		for index in cell.indices:
+			forces[index,:] += cell.theta
+
+	return forces
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
