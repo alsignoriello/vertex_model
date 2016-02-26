@@ -49,6 +49,14 @@ def plot_network(vertices, cells, L, file):
 			x2,y2 = v2
 			ax.plot([x1,x2],[y1,y2],c="k")
 
+			v2 = np.array((x2,y2))
+			v1 = v2 + periodic_diff(v1, v2, L)
+			x1,y1 = v1
+			ax.plot([x1,x2],[y1,y2],c="k")
+
+
+
+
 	ax.axis([0,L[0],0,L[1]])
 	plt.savefig(file)
 	plt.close(fig)

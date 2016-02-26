@@ -65,7 +65,7 @@ def euclidean_distance(x0, y0, x1, y1):
 
 # Difference with respect to periodic boundaries
 def periodic_diff(v1, v2, L):
-	return ((v1 - v2 + L/2) % L) - L/2
+	return ((v1 - v2 + L/2.) % L) - L/2.
 
 
 # Unit vector
