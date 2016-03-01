@@ -38,11 +38,12 @@ L - length of box
 
 class Cell:
 
-	def __init__(self, id, indices, A0, P0):
+	def __init__(self, id, indices, A0, P0, theta):
 		self.id = id
 		self.indices = indices
 		self.A0 = A0
 		self.P0 = P0
+		self.theta = theta
 
 
 	# return list of vertices
