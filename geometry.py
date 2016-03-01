@@ -83,16 +83,15 @@ def magnitude(v):
 
 
 # generate random angle theta
-def rand_theta():
-		
+def rand_angle():		
 	# generate random number between -pi - pi
-	xa = np.random.uniform(-pi, pi)
-	ya = np.random.uniform(-pi, pi)
-	
-	# transform to angle
-	x = sin(xa)
-	y = cos(ya)
+	A = np.random.uniform(-pi, pi)
+	return A
 
+def angle_2_vector(A):
+	x = sin(A)
+	y = cos(A)
+	
 	# transform to unit vector
 	v1 = np.array([x,y])
 	v2 = np.array([0,0])
@@ -100,10 +99,10 @@ def rand_theta():
 
 	return uv
 
+def vector_2_angle(x,y):
+	return atan2(x,y)
 
 
-
-''' MAY NEED TO ADAPT DATA STRUCTURES '''
 # get angle assuming vertex is p1
 # http://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
 def get_angle(p1,p2,p3):
@@ -121,6 +120,7 @@ def get_angle(p1,p2,p3):
 
 
 # check if counter-clockwise
+# change polygon data structure?
 def check_counter_clockwise(polygon):
 	sumEdges = 0
 	for i,(x,y) in enumerate(polygon):
