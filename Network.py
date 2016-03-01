@@ -70,13 +70,37 @@ class Network:
 		gamma = self.parameters['gamma']	
 		f3 = F_actin_myosin(vertices, cells, gamma, L)
 
-		return (f1 + f2 + f3)
+
+		km = self.parameters['km']
+		f4 = F_motility(vertices, cells, km)
+
+		return (f1 + f2 + f3 + f4)
 
 
 	# # move vertices wrt forces 
 	def move_vertices(self, f, vertices):
 		delta_t = self.parameters['delta_t']
 		vertices = vertices + delta_t * f
+
+		L = self.L
+		# wrap around periodic boundaries
+		for i,(x,y) in enumerate(vertices):
+			if x < 0:
+				# wrap around to right
+				vertices[i,0] = x + L[0]
+
+			if x > L[0]:
+				# wrap around to left
+				vertices[i,0] = x - L[0]
+
+			if y < 0:
+				# wrap around to top
+				vertices[i,1] = y + L[1]
+
+			if y > L[1]:
+				# wrap around to bottom
+				vertices[i,1] = y - L[1]
+
 		return vertices 
 
 
