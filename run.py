@@ -28,6 +28,7 @@ Duplicate edges in reverse order in edge list
 Periodic Boundary Conditions
 
 
+
 """
 
 
@@ -65,8 +66,8 @@ P0 = 0.2
 # parameters['P0'] = P0
 
 # # gamma - actin myosin contractility
-gamma = 0.001
-# gamma = 0.04 * ka * A0 # hexagonal network
+# gamma = 0.001
+gamma = 0.04 * ka * A0 # hexagonal network
 # gamma = 0.1 * ka * A0 # soft network
 parameters['gamma'] = gamma
 
@@ -81,28 +82,39 @@ parameters['tau'] = tau
 delta_t = 0.05
 parameters['delta_t'] = delta_t
 
+# theta
+# direction of motility for cells
+# initialize at 0, generate random angles in network
+theta = np.array([0.,0.])
+
+# km - motility parameter
+parameters['km'] = 0.1
+
+
 # Read Files
 # read in list of all vertices in network
-vertex_file = "network_vertices.txt"
+# vertex_file = "network_vertices.txt"
+vertex_file = "hex_vertices.txt"
 vertices = read_vertices(vertex_file)
 
 # read cell indices 
 # cell_index_file = "cell_indices.txt"
-cell_index_file = "cells_T1.txt"
+# cell_index_file = "cells_T1.txt"
+cell_index_file = "hex_indices.txt"
 cell_indices = read_cell_indices(cell_index_file)
 
 # Build cells
-cells = build_cells(cell_indices, A0, P0)
+cells = build_cells(cell_indices, A0, P0, theta)
 print "There are %d cells" % (len(cells))
 
 # read edge list
 # edge_file = "edges.txt"
-edge_file = "edges_T1.txt"
+# edge_file = "edges_T1.txt"
+edge_file = "hex_edges.txt"
 edges = read_edges(edge_file)
 
 
 # plot_network(vertices, cells, L, "hex_network_T0.jpg")
-
 network = Network(L, parameters)
 
 # # steepest descent
@@ -110,7 +122,7 @@ epsilon = 10**-6
 
 vertices = steepest_descent(network, vertices, cells, edges, delta_t, epsilon)
 
-plot_network(vertices, cells, L, "hex_network_2.jpg")
+# plot_network(vertices, cells, L, "hex_network_2.jpg")
 
 
 
