@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from geometry import periodic_diff, unit_vector, rand_theta
+from geometry import periodic_diff, unit_vector, angle_2_vector
 
 """
 
@@ -124,9 +124,9 @@ def F_actin_myosin(vertices, cells, gamma, L):
 				# get perimeter for this cell
 				p = cell.get_perim(vertices, L)
 
-				forces[i,:] -= (gamma * p) * (uvc - uvcc)
+				forces[i,:] += (gamma * p) * (uvc - uvcc)
 
-	return forces
+	return -forces
 
 def F_adhesion(vertices, edges, tau, L):
 
@@ -141,47 +141,44 @@ def F_adhesion(vertices, edges, tau, L):
 		vertex2 = vertices[i2]
 		v2 = v1 + periodic_diff(vertex2, v1, L)
 		uv = unit_vector(v1, v2)
-		forces[i1,:] -= tau * uv
+		forces[i1,:] += tau * uv
 
-	return forces
+	return -forces
 
 
 # Force to move vertices of cells in particular direction
-def F_motility(vertices, cells):
+def F_motility(vertices, cells, km):
 
 	n_vertices = len(vertices)
 	forces = np.zeros((n_vertices, 2))
 
-	for cell in cells:
-		cell.theta = rand_theta()
-
 	# find neighbors for every cell
 	# defined as any two cells that share a vertex
-	avg_thetas = np.zeros((len(cells),2))
+	avg_angles = np.zeros(len(cells))
 	neighbor_count = np.ones(len(cells))
 
 	for i,cell in enumerate(cells):
-		avg_thetas[i,:] += cell.theta
+		avg_angles[i] += cell.theta
 		for j,cell2 in enumerate(cells):
 			if i != j:
 				a = cell.indices
 				b = cell2.indices
 				if any(k in a for k in b) == True:
-					avg_thetas[i,:] += cell2.theta
+					avg_angles[i] += cell2.theta
 					neighbor_count[i] += 1
 
 
-	psi = 0.1
+	# parameters to assure sharp turns do not occur
+	xi = 0.5
 
 	for i,cell in enumerate(cells):
-		xn = np.random.uniform(-1,1)
-		yn = np.random.uniform(-1,1)
-		n = np.array((xn,yn))
 
-		cell.theta = psi * (cell.theta - (avg_thetas[i,:] / neighbor_count[i])) + n
+		n = np.random.uniform(-1,1)
 
+		cell.theta = xi * (cell.theta - (avg_angles[i] / neighbor_count[i])) + n
 		for index in cell.indices:
-			forces[index,:] += cell.theta
+			f = angle_2_vector(cell.theta)
+			forces[index,:] += km * f
 
 	return forces
 
