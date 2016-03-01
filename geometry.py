@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from math import sqrt, pi, sin, cos
+from math import sqrt, pi, sin, cos, acos
 
 
 """ 
@@ -106,7 +106,7 @@ def rand_theta():
 ''' MAY NEED TO ADAPT DATA STRUCTURES '''
 # get angle assuming vertex is p1
 # http://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
-def getAngle(p1,p2,p3):
+def get_angle(p1,p2,p3):
 	radian = 0
 	p12 = sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 	p13 = sqrt((p1[0]-p3[0])**2 + (p1[1]-p3[1])**2)
@@ -121,7 +121,7 @@ def getAngle(p1,p2,p3):
 
 
 # check if counter-clockwise
-def checkCounterClockwise(polygon):
+def check_counter_clockwise(polygon):
 	sumEdges = 0
 	for i,(x,y) in enumerate(polygon):
 		if i == 0:
