@@ -62,10 +62,10 @@ def write_cell_indices(cells, file):
 	f.close()
 	return 
 
-def build_cells(cell_indices, A0, P0):
+def build_cells(cell_indices, A0, P0, theta):
 	cells = []
 	for i,indices in enumerate(cell_indices):
-		cell = Cell(i, indices, A0, P0)
+		cell = Cell(i, indices, A0, P0, theta)
 		cells.append(cell)
 	return cells
 
