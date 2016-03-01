@@ -2,6 +2,8 @@
 import numpy as np 
 from scipy.spatial import Voronoi
 import matplotlib.pyplot as plt
+from geometry import get_angle
+from math import pi
 
 
 """
@@ -141,19 +143,84 @@ def get_edges(vertices, edges, index_map, L):
 
 
 # get cells
+# iterate over edges, building cycles
+# find all edges that share a common vertex
+# take the edge that forms the smallest angle
+# NOTE: edges are not listed in reverse order,
+# ie. edge [0,1] exists in edges, but [1,0] does not
 def get_cells(vertices, edges):
+
+	cells = []
+	edge_used = np.zeros(len(edges))
+	cell_count = 0
 	
-	cells = {}
+	for i,edge in enumerate(edges):
+
+		# if this edge is not used
+		if edge_used[i] != 1:
+			i1, i2 = edge
+
+			cell = []
+			cell.append(i1)
+			cell.append(i2)
+
+			cycle = False
+			edge_used[i] = 1
+
+			while cycle == False:
+				# every vertex should have 2 edges 
+				# other than the edge leading to current vertex
+				# choose the edge that cycles counter-clockwise, ie, smallest angle
+				min_angle = 2. * pi
+				next_i = -1 
+				edge_idx = -1
+
+				for j,edge2 in enumerate(edges):
+
+					if edge_used[j] != 1:
+
+						if i2 == edge2[0]: #  and edge2[1] != i1: not necessary because edge_used
+							print i1, i2, edge2[0], edge2[1]	
+							v1 = vertices[i1]
+							v2 = vertices[i2]
+							v3 = vertices[edge2[1]]	
+							angle = get_angle(v2, v1, v3)
+							if angle < min_angle:
+								min_angle = angle
+								next_i = edge2[1]
+								edge_idx = j
+	
+						if i2 == edge2[1]: #and edge2[0] != i1:
+							print i1, i2, edge2[0], edge2[1]				
+							v1 = vertices[i1]
+							v2 = vertices[i2]
+							v3 = vertices[edge2[0]]		
+							angle = get_angle(v2, v1, v3)
+							if angle < min_angle:
+								min_angle = angle
+								next_i = edge2[0]
+								edge_idx = j
 
 
-	# cycle through cells
-	for i,vertex in enumerate(vertices):
+				print min_angle, next_i, edge_idx
+				# print min_angle, next_i, edge_idx
+				if next_i == cell[0]:
+					cycle = True
+					# ADD CHECK TO ASSERT CYCLES ARE IN COUNTER CLOCKWISE ORDER!!
+					# REVERSE ORDER IF NOT!
+					print cell
+					cells.append(cell)
+					cell_count += 1
 
-		# find edges associated with this vertex
-		for edge in edges:
-			
+				if next_i != -1 and cycle == False:
+					cell.append(next_i)
+					edge_used[edge_idx] = 1
+					i1 = i2
+					i2 = next_i
 
-
+				if next_i == -1:
+					print "wtf"
+					exit()
 
 
 	return cells
@@ -228,31 +295,36 @@ vor = Voronoi(coord_tile)
 
 
 tile_vertices = vor.vertices
-plot_vertices(tile_vertices, "k")
+# plot_vertices(tile_vertices, "k")
 
 tile_edges = vor.ridge_vertices
-plot_voronoi(tile_vertices, tile_edges, "k")
+# plot_voronoi(tile_vertices, tile_edges, "k")
 
 # get vertices for cells in center tile
 vertices, index_map = get_vertices(tile_vertices, x_min, x_max, y_min, y_max)
-plot_vertices(vertices, "c")
+# plot_vertices(vertices, "c")
 
-# plot boundaries
-plot_bounds(x_min, x_max, y_min, y_max, "m")
-plt.axis([-0.5,1.5,-0.5,1.5])
+# # plot boundaries
+# plot_bounds(x_min, x_max, y_min, y_max, "m")
+# plt.axis([-0.5,1.5,-0.5,1.5])
 
 # for key in index_map:
 # 	print key, index_map[key]
 
 
 edges = get_edges(tile_vertices, tile_edges, index_map, L)
-# plotting routine does not understand periodic boundaries currently...
+for edge in edges:
+	print edge
+print len(edges) 
+
+exit()
 # plot_voronoi(vertices, edges, "c")
 # plt.savefig("voronoi_periodic.jpg")
 
 cells = get_cells(vertices, edges)
+print cells
 
-# ADD CHECK TO ASSERT CYCLES ARE IN COUNTER CLOCKWISE ORDER!!
+
 
 
 
