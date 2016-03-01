@@ -70,7 +70,6 @@ class Network:
 		gamma = self.parameters['gamma']	
 		f3 = F_actin_myosin(vertices, cells, gamma, L)
 
-
 		km = self.parameters['km']
 		f4 = F_motility(vertices, cells, km)
 
