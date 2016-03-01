@@ -29,9 +29,7 @@ def plot_network(vertices, cells, L, file):
 	plt.cla()
 	fig = plt.figure()
 	ax = fig.add_subplot(1,1,1)
-	for vertex in vertices:
-		x = vertex[0]
-		y = vertex[1]
+	for x,y in vertices:
 		ax.scatter(x, y, c="c")
 
 	for cell in cells:
@@ -53,7 +51,6 @@ def plot_network(vertices, cells, L, file):
 			v1 = v2 + periodic_diff(v1, v2, L)
 			x1,y1 = v1
 			ax.plot([x1,x2],[y1,y2],c="k")
-
 
 
 
