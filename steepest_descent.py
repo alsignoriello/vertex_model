@@ -4,6 +4,7 @@ from Network import Network
 from transition import *
 from parser import write_cell_indices
 from plot import plot_network
+from geometry import rand_angle
 
 def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
@@ -21,9 +22,15 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
 	# while forces are greater than epsilon
 	forces = epsilon**0.5
-	while np.sum(forces**2)**(0.5) > epsilon:
+	# while np.sum(forces**2)**(0.5) > epsilon:
+	count = 0
 
-		# plot_network(vertices, cells, L, "movie2/%f.jpg" % t)
+	# generate random angle vectors
+	for cell in cells:
+		cell.theta = rand_angle()
+		
+	while count < 100:
+		# plot_network(vertices, cells, L, "motility4/%d.jpg" % count)
 
 		# get energy for network
 		energy = network.get_energy(vertices, cells, edges)
@@ -43,6 +50,7 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
 		# # check for T1 transitions
 		cells, edges = T1_transition(network, vertices, cells, edges, min_dist)
+		count += 1
 
 
 	return vertices
