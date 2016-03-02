@@ -105,7 +105,7 @@ def vector_2_angle(x,y):
 
 # get angle assuming vertex is p1
 # http://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
-def get_angle(p1,p2,p3):
+def get_angle_points(p1,p2,p3):
 	radian = 0
 	p12 = sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 	p13 = sqrt((p1[0]-p3[0])**2 + (p1[1]-p3[1])**2)
@@ -118,6 +118,14 @@ def get_angle(p1,p2,p3):
 			pass
 	return radian
 
+def get_angle_vectors(v1, v2):
+	theta = np.dot(v1,v2) 
+	theta = theta / (magnitude(v1) * magnitude(v2))
+	return acos(theta)
+
+
+def radian_2_degrees(theta):
+	return theta * (360. / (2 * pi))
 
 # check if counter-clockwise
 # change polygon data structure?
