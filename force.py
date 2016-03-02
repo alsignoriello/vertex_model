@@ -175,28 +175,18 @@ def F_motility(vertices, cells, km):
 
 		n = np.random.uniform(-1,1)
 
+		# print cell.theta, (avg_angles[i] / neighbor_count[i])
+
 		cell.theta = xi * (cell.theta - (avg_angles[i] / neighbor_count[i])) + n
 		for index in cell.indices:
 			f = angle_2_vector(cell.theta)
+			# print index, cell.theta, f
 			forces[index,:] += km * f
+			# print forces[index,:]
 
-	return forces
+	print -forces
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return -forces
 
 
 
