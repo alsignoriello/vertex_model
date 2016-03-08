@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from math import sqrt, pi, sin, cos, acos
+from math import sqrt, pi, sin, cos, acos, atan2, floor
 
 
 """ 
@@ -88,6 +88,7 @@ def rand_angle():
 	A = np.random.uniform(-pi,pi)
 	return A
 
+# returns unit vector
 def angle_2_vector(A):
 	x = cos(A)
 	y = sin(A)
@@ -101,6 +102,14 @@ def angle_2_vector(A):
 
 def vector_2_angle(x,y):
 	return atan2(y,x)
+
+
+# in radians [-pi, pi]
+# % angle_rad = angle_rad - 2*pi*floor( (angle_rad+pi)/(2*pi) ); 
+def angle_diff(theta1, theta2):
+	theta = (theta1 - theta2)
+	return (theta - 2 * pi * floor((theta + pi) / (2 * pi)))
+
 
 
 # get angle assuming vertex is p1
