@@ -85,13 +85,15 @@ def magnitude(v):
 # generate random angle theta
 def rand_angle():		
 	# generate random number between -pi - pi
-	A = np.random.uniform(-pi,pi)
-	return A
+	theta = np.random.uniform(-pi,pi)
+	# generate random number between 0 and 2pi
+	# theta = np.random.uniform(0,2*pi)
+	return theta
 
 # returns unit vector
-def angle_2_vector(A):
-	x = cos(A)
-	y = sin(A)
+def angle_2_vector(theta):
+	x = cos(theta)
+	y = sin(theta)
 	
 	# transform to unit vector
 	v1 = np.array([x,y])
