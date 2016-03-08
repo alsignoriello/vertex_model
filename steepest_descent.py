@@ -22,15 +22,16 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 
 	# while forces are greater than epsilon
 	forces = epsilon**0.5
-	# while np.sum(forces**2)**(0.5) > epsilon:
 	count = 0
 
 	# generate random angle vectors
 	for cell in cells:
 		cell.theta = rand_angle()
 		
-	while count < 100:
-		# plot_network(vertices, cells, L, "motility4/%d.jpg" % count)
+	while count < 500:
+	# while np.sum(forces**2)**(0.5) > epsilon:
+		if count % 5 == 0:
+			plot_network(vertices, cells, L, "motility5/%d.jpg" % count)
 
 		# get energy for network
 		energy = network.get_energy(vertices, cells, edges)
@@ -52,5 +53,5 @@ def steepest_descent(network, vertices, cells, edges, delta_t, epsilon):
 		cells, edges = T1_transition(network, vertices, cells, edges, min_dist)
 		count += 1
 
-
+		# exit()
 	return vertices
