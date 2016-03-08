@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import numpy as np
-from geometry import periodic_diff, unit_vector, angle_2_vector
+from geometry import *
+from math import pi
+import matplotlib.pyplot as plt
 
 """
 
@@ -154,43 +156,78 @@ def F_motility(vertices, cells, km):
 
 	# find neighbors for every cell
 	# defined as any two cells that share a vertex
-	avg_angles = np.zeros(len(cells))
+	avg_angles = np.zeros((len(cells), 2))
 	neighbor_count = np.ones(len(cells))
 
 	for i,cell in enumerate(cells):
-		avg_angles[i] += cell.theta
+		avg_angles[i, :] += angle_2_vector(cell.theta)
 		for j,cell2 in enumerate(cells):
 			if i != j:
 				a = cell.indices
 				b = cell2.indices
 				if any(k in a for k in b) == True:
-					avg_angles[i] += cell2.theta
+					avg_angles[i, :] += angle_2_vector(cell2.theta)
 					neighbor_count[i] += 1
 
 
-	# parameters to assure sharp turns do not occur
-	xi = 0.5
+	# noise scaling parameter
+	xi = 0.1
 
 	for i,cell in enumerate(cells):
 
-		n = np.random.uniform(-1,1)
+		# noise variable
+		nx = np.random.uniform(-pi,pi)
+		ny = np.random.uniform(-pi,pi)
+		n = np.array([nx,ny])
 
-		# print cell.theta, (avg_angles[i] / neighbor_count[i])
+		# average all of the unit vectors for angles 
+		avg = (avg_angles[i,:] / neighbor_count[i])
+		# print vector_2_angle(avg[0], avg[1])
 
-		cell.theta = xi * (cell.theta - (avg_angles[i] / neighbor_count[i])) + n
+		# add this force direction for every vertex in current cell
 		for index in cell.indices:
-			f = angle_2_vector(cell.theta)
-			# print index, cell.theta, f
-			forces[index,:] += km * f
-			# print forces[index,:]
+			forces[index, :] += km * (avg + xi * n)
 
-	print -forces
+		# assign new theta to cell 
+		# theta = avg + xi * noise
+		cell.theta = vector_2_angle(avg[0] + xi * n[0], avg[1] + xi * n[1])
 
-	return -forces
-
-
+	# divide by 3 because 3 edges for every index
+	return -(forces / 3.)
 
 
 
+# theta = xi * (theta - avg) + n
+
+
+
+
+
+
+
+
+
+
+
+
+
+# visualization for average vector
+
+# plt.plot([0, avg_angles[i,0]],[0,avg_angles[i,1]], color="k")
+
+# v = angle_2_vector(cell2.theta)
+# plt.plot([0,v[0]],[0,v[1]],color="k")
+# print avg_angles[i,:] / neighbor_count[i]
+# print magnitude(avg_angles[i,:] / neighbor_count
+
+# v_avg = avg_angles[i,:] / neighbor_count[i]
+# print magnitude(v_avg)
+# print vector_2_angle(v_avg[0], v_avg[1])
+# plt.plot([0,v_avg[0]],[0,v_avg[1]],color="m")
+# v_avg_unit = unit_vector(v_avg, np.array([0,0]))
+# plt.plot([0,v_avg_unit[0]],[0,v_avg_unit[1]],color="g")
+# plt.plot([0,v_avg[0]],[0,v_avg[1]],color="m")
+# plt.show()
+# exit()
 
 
