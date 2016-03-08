@@ -85,12 +85,12 @@ def magnitude(v):
 # generate random angle theta
 def rand_angle():		
 	# generate random number between -pi - pi
-	A = np.random.uniform(-pi, pi)
+	A = np.random.uniform(-pi,pi)
 	return A
 
 def angle_2_vector(A):
-	x = sin(A)
-	y = cos(A)
+	x = cos(A)
+	y = sin(A)
 	
 	# transform to unit vector
 	v1 = np.array([x,y])
@@ -100,7 +100,7 @@ def angle_2_vector(A):
 	return uv
 
 def vector_2_angle(x,y):
-	return atan2(x,y)
+	return atan2(y,x)
 
 
 # get angle assuming vertex is p1
