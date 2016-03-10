@@ -20,16 +20,6 @@ date: 2/15/16
 """
 
 
-def adjacency_matrix(vertices, edges):
-	n = len(vertices)
-	matrix = np.zeros((n,n))
-	for i1,i2 in edges:
-		matrix[i1,i2] = 1
-	return matrix
-
-
-
-
 def plot_bounds(x_min, x_max, y_min, y_max, color):
 	plt.plot([x_min,x_max], [y_min,y_min], color=color)
 	plt.plot([x_min,x_min], [y_min,y_max], color=color)
@@ -98,8 +88,6 @@ def get_vertices(vertices, x_min, x_max, y_min, y_max):
 				index_map[i] = curr_indx
 				v.append((x,y))
 				count += 1
-
-		
 
 	print "There are %d vertices\n" % count 
 
@@ -193,8 +181,8 @@ def get_new_index_map(vertices, v, index_map):
 
 	# add indices mapping to new vertices outside of bounds
 	for i,(x,y) in enumerate(vertices):
-		x1 = -100
-		y1 = -100
+		x1 = x
+		y1 = y
 
 		if x < x_min and x > -1.:
 			x1 = x + 1.
@@ -208,12 +196,12 @@ def get_new_index_map(vertices, v, index_map):
 		if y > y_max and y < 2.:
 			y1 = y - 1.
 
-		if x1 != -100 and y1 != -100:
-			# look up new x,y in list
-			for j,(x2,y2) in enumerate(v):
-				if abs(x1 - x2) < 10**-6:
-					if abs(y1 - y2) < 10**-6:
-						index_map[i] = j
+
+		# look up new x,y in list
+		for j,(x2,y2) in enumerate(v):
+			if abs(x1 - x2) < 10**-6:
+				if abs(y1 - y2) < 10**-6:
+					index_map[i] = j
 
 	return index_map
 
@@ -229,16 +217,33 @@ def get_cells(regions, index_map):
 		for index in region:
 			if index in index_map:
 				count += 1
-				# print index_map[index]
 				cell.append(index_map[index])
 		if count == len(region):
 			cells.append(cell)
 
-	print len(cells)
-	for cell in cells:
-		print cell
-	
-	return cells
+
+	# remove duplicates
+	# Note: brute force - 
+	# could be more efficient, but time constraint
+
+	cell_count = {}
+	remove = []
+	for i,cell in enumerate(cells):
+
+		if tuple(cell) not in cell_count:
+			cell_count[tuple(cell)] = 1
+		else:
+			cell_count[tuple(cell)] += 1
+			remove.append(i)
+
+	new_cells = []
+	for i,cell in enumerate(cells):
+		if i not in remove:
+			new_cells.append(cell)
+
+	print len(cells), len(new_cells), len(remove)
+
+	return new_cells
 
 
 # Assumes coordiantes are between 0 and 1 
@@ -323,9 +328,6 @@ vertices, index_map = get_vertices(tile_vertices, x_min, x_max, y_min, y_max)
 # plot_bounds(x_min, x_max, y_min, y_max, "m")
 # plt.axis([-0.5,1.5,-0.5,1.5])
 
-# for key in index_map:
-# 	print key, index_map[key]
-
 
 edges = get_edges(tile_vertices, tile_edges, index_map, L)
 print len(edges)
@@ -335,17 +337,21 @@ print len(edges)
 # plot_voronoi(vertices, edges, "c")
 # plt.savefig("voronoi_periodic.jpg")
 
+# new index map adds 
+# NOTE: assumes x_max and y_max are both 1 (hard coded)
+# can change this later...
 index_map = get_new_index_map(tile_vertices, vertices, index_map)
+
 
 regions = vor.regions
 cells = get_cells(regions, index_map)
-print cells
+
+
 
 # build cells
 cell_class = build_cells(cells, 1, 1, 0.)
 
 plot_network(vertices, cell_class, L, "voronoi_test.jpg")
-
 
 exit()
 
@@ -365,167 +371,3 @@ np.savetxt("voronoi_edges.txt", edges, fmt="%d")
 
 
 
-
-
-
-
-# # generate voronoi diagram
-# # vor = Voronoi(coords)
-# vor = Voronoi(coords)
-
-# # vertices corresponding to voronoi cells
-# vertices = vor.vertices
-# edges =  vor.ridge_vertices
-# plot_voronoi(vertices, edges, "voronoi.jpg", "c")
-
-# plt.savefig("voronoi_test.jpg")
-
-# # scale to box length
-# vertices[:,0] = (vertices[:,0] - np.min(vertices[:,0])) / (np.max(vertices[:,0]) - np.min(vertices[:,0]))
-# vertices[:,1] = (vertices[:,1] - np.min(vertices[:,1])) / (np.max(vertices[:,1]) - np.min(vertices[:,1]))
-# print np.min(vertices[:,0]), np.max(vertices[:,0])
-# print np.min(vertices[:,1]), np.max(vertices[:,1])
-
-
-
-
-# if edges were always to the left...
-# not true..
-
-# if edge2[0] == cell[-1] and edge2[1] != cell[-2]:
-# 	print cell[-2], cell[-1], edge2[0], edge2[1]
-# 	print vertices[cell[-2]], vertices[cell[-1]], vertices[edge2[1]]
-# 	i0 = cell[-2]
-# 	i1 = cell[-1]
-# 	i2 = edge2[0]
-# 	i3 = edge2[1]
-# 	v1 = vertices[i0] - vertices[i1]
-# 	v2 = vertices[i2] - vertices[i3]
-# 	delta = (v1[0] * v2[1]) - (v1[1] * v2[0])
-# 	print delta
-
-
-# Finds edges on boundaries
-# # show plot
-# count = {}
-# matches = []
-# for edge in edges:
-# 	e1 = edge[0]
-# 	e2 = edge[1]
-# 	if e1 not in count:
-# 		count[e1] = 1
-# 	else:
-# 		count[e1] += 1
-# 	if e2 == -1:
-# 		count[e1] -= 1
-
-# 	if e2 not in count:
-# 		count[e2] = 1
-# 	else:
-# 		count[e2] += 1
-# 	if e1 == -1:
-# 		count[e2] -= 1
-
-
-# 	if -1 not in edge:
-# 		x1,y1 = vertices[edge[0]]
-# 		x2,y2 = vertices[edge[1]]
-# 		plt.plot([x1,x2],[y1,y2],color="k")
-
-# 	else:
-# 		if e1 != -1:
-# 			x,y = vertices[e1]
-# 			plt.scatter(x,y,color="r")
-# 			matches.append((x,y))
-# 		else:
-# 			x,y = vertices[e2]
-# 			plt.scatter(x,y,color="r")
-# 			matches.append((x,y))
-
-# for key in count:
-# 	if count[key] != 3:
-# 		print key, count[key]
-
-
-
-
-
-# first attempt to find cycles....
-
-	# cells = []
-	# edge_used = np.zeros(len(edges))
-	# cell_count = 0
-	
-	# for i,edge in enumerate(edges):
-
-	# 	# if this edge is not used
-	# 	if edge_used[i] != 1:
-	# 		i1, i2 = edge
-
-	# 		cell = []
-	# 		cell.append(i1)
-	# 		cell.append(i2)
-
-	# 		cycle = False
-	# 		edge_used[i] = 1
-
-	# 		while cycle == False:
-	# 			# every vertex should have 2 edges 
-	# 			# other than the edge leading to current vertex
-	# 			# choose the edge that cycles counter-clockwise, ie, smallest angle
-	# 			min_angle = 2. * pi
-	# 			next_i = -1 
-	# 			edge_idx = -1
-
-	# 			for j,edge2 in enumerate(edges):
-
-	# 				if edge_used[j] != 1:
-
-	# 					if i2 == edge2[0]: #  and edge2[1] != i1: not necessary because edge_used
-	# 						# print i1, i2, edge2[0], edge2[1]	
-	# 						v1 = vertices[i1]
-	# 						v2 = vertices[i2]
-	# 						v3 = vertices[edge2[1]]	
-	# 						angle = get_angle(v2, v1, v3)
-	# 						# print angle
-	# 						if angle < min_angle:
-	# 							min_angle = angle
-	# 							next_i = edge2[1]
-	# 							edge_idx = j
-	
-	# 					if i2 == edge2[1]: #and edge2[0] != i1:
-	# 						# print i1, i2, edge2[0], edge2[1]				
-	# 						v1 = vertices[i1]
-	# 						v2 = vertices[i2]
-	# 						v3 = vertices[edge2[0]]		
-	# 						angle = get_angle(v2, v1, v3)
-	# 						# print angle
-	# 						if angle < min_angle:
-	# 							min_angle = angle
-	# 							next_i = edge2[0]
-	# 							edge_idx = j
-
-
-	# 			# print min_angle, next_i, edge_idx
-	# 			# print min_angle, next_i, edge_idx
-	# 			if next_i == cell[0]:
-	# 				cycle = True
-	# 				# ADD CHECK TO ASSERT CYCLES ARE IN COUNTER CLOCKWISE ORDER!!
-	# 				# REVERSE ORDER IF NOT!
-	# 				# print cell
-	# 				plot_cell(vertices, cell)
-	# 				cells.append(cell)
-	# 				cell_count += 1
-
-	# 			if next_i != -1 and cycle == False:
-	# 				cell.append(next_i)
-	# 				edge_used[edge_idx] = 1
-	# 				i1 = i2
-	# 				i2 = next_i
-
-	# 			if next_i == -1:
-	# 				# print "wtf"
-	# 				plot_cell(vertices, cell)
-	# 				exit()
-
-	# 			print min_angle, next_i, edge_idx, cell
