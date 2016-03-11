@@ -207,7 +207,7 @@ def get_new_index_map(vertices, v, index_map):
 
 # get cells
 # iterate over edges, building cycles
-def get_cells(regions, index_map):
+def get_cells(regions, index_map, vertices):
 
 	cells = []
 
@@ -223,25 +223,17 @@ def get_cells(regions, index_map):
 
 
 	# remove duplicates
-	# Note: brute force - 
-	# could be more efficient, but time constraint
-
-	cell_count = {}
-	remove = []
-	for i,cell in enumerate(cells):
-
-		if tuple(cell) not in cell_count:
-			cell_count[tuple(cell)] = 1
-		else:
-			cell_count[tuple(cell)] += 1
-			remove.append(i)
-
 	new_cells = []
 	for i,cell in enumerate(cells):
-		if i not in remove:
+		add = True
+		for cell2 in new_cells:
+			if sorted(cell) == sorted(cell2):
+				add = False
+		if add == True:
 			new_cells.append(cell)
 
-	print len(cells), len(new_cells), len(remove)
+	print len(cells), len(new_cells)
+
 
 	return new_cells
 
@@ -344,15 +336,15 @@ index_map = get_new_index_map(tile_vertices, vertices, index_map)
 
 
 regions = vor.regions
-cells = get_cells(regions, index_map)
+cells = get_cells(regions, index_map, vertices)
 
 
 
 # build cells
 cell_class = build_cells(cells, 1, 1, 0.)
 
-plot_network(vertices, cell_class, L, "voronoi_test.jpg")
 
+plot_network(vertices, cell_class, L, "voronoi_test.jpg")
 
 
 # Write data to text files
@@ -367,6 +359,7 @@ np.savetxt("voronoi_edges.txt", edges, fmt="%d")
 # write cells
 f = open("voronoi_cells.txt", "w+")
 for cell in cells:
+
 	for index in cell:
 		f.write("%d\t" % index)
 	f.write("\n")
