@@ -353,8 +353,6 @@ cell_class = build_cells(cells, 1, 1, 0.)
 
 plot_network(vertices, cell_class, L, "voronoi_test.jpg")
 
-exit()
-
 
 
 # Write data to text files
@@ -367,7 +365,12 @@ np.savetxt("voronoi_vertices.txt", vertices)
 np.savetxt("voronoi_edges.txt", edges, fmt="%d")
 
 # write cells
-
+f = open("voronoi_cells.txt", "w+")
+for cell in cells:
+	for index in cell:
+		f.write("%d\t" % index)
+	f.write("\n")
+f.close()
 
 
 
