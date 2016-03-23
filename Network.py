@@ -71,7 +71,8 @@ class Network:
 		f3 = F_actin_myosin(vertices, cells, gamma, L)
 
 		km = self.parameters['km']
-		f4 = F_motility(vertices, cells, km)
+		xi = self.parameters['xi']
+		f4 = F_motility(vertices, cells, km, xi)
 
 		return (f1 + f2 + f3 + f4)
 

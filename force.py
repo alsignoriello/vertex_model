@@ -16,6 +16,52 @@ date: 1/20/16
 """
 
 
+def get_forces(vertices, polys, edges, parameters):
+	# get necessary parameters 
+	lx = parameters['lx']
+	ly = parameters['ly']
+	L = np.array([lx,ly])
+	ka = parameters['ka']
+	Lambda = parameters['Lambda']
+	gamma = parameters['gamma']
+
+
+	f1 = F_elasticity(vertices, polys, ka, L)
+	f2 = F_adhesion(vertices, edges, Lambda, L)
+	f3 = F_contraction(vertices, polys, gamma, L)
+
+	return -(f1 + f2 + f3)
+
+
+def move_vertices(vertices, forces, parameters):
+	delta_t = parameters['delta_t']
+	lx = parameters['lx']
+	ly = parameters['ly']
+
+	vertices = vertices + delta_t * forces
+
+	# wrap around periodic boundaries
+	for i,(x,y) in enumerate(vertices):
+		if x < 0:
+			# wrap around to right
+			vertices[i,0] = x + lx
+
+		if x > lx:
+			# wrap around to left
+			vertices[i,0] = x - lx
+
+		if y < 0:
+			# wrap around to top
+			vertices[i,1] = y + ly
+
+		if y > ly:
+			# wrap around to bottom
+			vertices[i,1] = y - ly
+
+		return vertices 
+
+
+
 def get_clockwise(index, indices, vertices, L):
 	
 	# get position of vertex in list
@@ -59,7 +105,7 @@ def get_counter_clockwise(index, indices, vertices, L):
 
 
 # Force on vertex due to elasticity
-def F_elasticity(vertices, cells, ka,  L):
+def F_elasticity(vertices, polys, ka,  L):
 	n_vertices = len(vertices)
 
 	# evert vertex has an associated force
@@ -68,18 +114,18 @@ def F_elasticity(vertices, cells, ka,  L):
 	# iterate over vertices and get force
 	for i,vertex in enumerate(vertices):
 
-		# find cells with this vertex
-		for cell in cells:
+		# find polys with this vertex
+		for poly in polys:
 
-			# if this vertex is in current cell
-			# compute force contributed from this cell
-			if i in cell.indices:
+			# if this vertex is in current poly
+			# compute force contributed from this poly
+			if i in poly.indices:
 
 				# get clockwise vector
-				vc = get_clockwise(i, cell.indices, vertices, L)
+				vc = get_clockwise(i, poly.indices, vertices, L)
 
 				# get counter-clockwise vector
-				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
+				vcc = get_counter_clockwise(i, poly.indices, vertices, L)
 
 				# get the difference vector
 				diff = vc - vcc
@@ -92,17 +138,17 @@ def F_elasticity(vertices, cells, ka,  L):
 
 				f = -0.5 * np.dot(perp_matrix, diff)
 
-				# force contributed from this cell stored in f
-				coeff = ka * (cell.A0 - cell.get_area(vertices, L))
+				# force contributed from this poly stored in f
+				coeff = ka * (poly.A0 - poly.get_area(vertices, L))
 
 				forces[i,:] += coeff * f
 
 
-	return -forces
+	return forces
 
 
 
-def F_actin_myosin(vertices, cells, gamma, L):
+def F_contraction(vertices, polys, gamma, L):
 
 	# every vertex has an associated force
 	n_vertices = len(vertices)
@@ -110,27 +156,27 @@ def F_actin_myosin(vertices, cells, gamma, L):
 
 	for i,vertex in enumerate(vertices):
 
-		# find cells with this vertex
-		for cell in cells:
+		# find polys with this vertex
+		for poly in polys:
 
-			if i in cell.indices:
+			if i in poly.indices:
 
 				# get clockwise vector
-				vc = get_clockwise(i, cell.indices, vertices, L)
+				vc = get_clockwise(i, poly.indices, vertices, L)
 				uvc = unit_vector(vertex, vc)
 	
 				# get counter-clockwise vector
-				vcc = get_counter_clockwise(i, cell.indices, vertices, L)
+				vcc = get_counter_clockwise(i, poly.indices, vertices, L)
 				uvcc = unit_vector(vcc, vertex)
 
-				# get perimeter for this cell
-				p = cell.get_perim(vertices, L)
+				# get perimeter for this poly
+				p = poly.get_perim(vertices, L)
 
 				forces[i,:] += (gamma * p) * (uvc - uvcc)
 
-	return -forces
+	return forces
 
-def F_adhesion(vertices, edges, tau, L):
+def F_adhesion(vertices, edges, Lambda, L):
 
 	# every vertex has an associated force
 	n_vertices = len(vertices)
@@ -143,61 +189,79 @@ def F_adhesion(vertices, edges, tau, L):
 		vertex2 = vertices[i2]
 		v2 = v1 + periodic_diff(vertex2, v1, L)
 		uv = unit_vector(v1, v2)
-		forces[i1,:] += tau * uv
+		forces[i1,:] += Lambda * uv
 
-	return -forces
-
-
-# Force to move vertices of cells in particular direction
-def F_motility(vertices, cells, km):
-
-	n_vertices = len(vertices)
-	forces = np.zeros((n_vertices, 2))
-
-	# find neighbors for every cell
-	# defined as any two cells that share a vertex
-	avg_angles = np.zeros((len(cells), 2))
-	neighbor_count = np.ones(len(cells))
-
-	for i,cell in enumerate(cells):
-		avg_angles[i, :] += angle_2_vector(cell.theta)
-		for j,cell2 in enumerate(cells):
-			if i != j:
-				a = cell.indices
-				b = cell2.indices
-				if any(k in a for k in b) == True:
-					avg_angles[i, :] += angle_2_vector(cell2.theta)
-					neighbor_count[i] += 1
-
-
-	# noise scaling parameter
-	xi = 0.1
-
-	for i,cell in enumerate(cells):
-
-		# noise variable
-		nx = np.random.uniform(-pi,pi)
-		ny = np.random.uniform(-pi,pi)
-		n = np.array([nx,ny])
-
-		# average all of the unit vectors for angles 
-		avg = (avg_angles[i,:] / neighbor_count[i])
-		# print vector_2_angle(avg[0], avg[1])
-
-		# add this force direction for every vertex in current cell
-		for index in cell.indices:
-			forces[index, :] += km * (avg + xi * n)
-
-		# assign new theta to cell 
-		# theta = avg + xi * noise
-		cell.theta = vector_2_angle(avg[0] + xi * n[0], avg[1] + xi * n[1])
-
-	# divide by 3 because 3 edges for every index
-	return -(forces / 3.)
+	return forces
 
 
 
-# theta = xi * (theta - avg) + n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # Force to move vertices of polys in particular direction
+# def F_motility(vertices, polys, km, xi):
+
+
+# 	n_vertices = len(vertices)
+# 	forces = np.zeros((n_vertices, 2))
+
+# 	# find neighbors for every poly
+# 	# defined as any two polys that share a vertex
+# 	avg_angles = np.zeros((len(polys), 2))
+# 	neighbor_count = np.ones(len(polys))
+
+# 	for i,poly in enumerate(polys):
+# 		avg_angles[i, :] += angle_2_vector(poly.theta)
+# 		for j,poly2 in enumerate(polys):
+# 			if i != j:
+# 				a = poly.indices
+# 				b = poly2.indices
+# 				if any(k in a for k in b) == True:
+# 					avg_angles[i, :] += angle_2_vector(poly2.theta)
+# 					neighbor_count[i] += 1
+
+# 	for i,poly in enumerate(polys):
+# 		# noise variable
+# 		nx = np.random.uniform(-pi,pi)
+# 		ny = np.random.uniform(-pi,pi)
+# 		n = np.array([nx,ny])
+	
+# 		# average all of the unit vectors for angles 
+# 		avg = (avg_angles[i,:] / neighbor_count[i])
+	
+# 		# add this force direction for every vertex in current poly
+# 		for index in poly.indices:
+# 			forces[index, :] += km * (avg + xi * n)
+	
+# 		# theta = avg + xi * noise
+# 		poly.theta = vector_2_angle(avg[0] + xi * n[0], avg[1] + xi * n[1])
+# 	return -forces
 
 
 
@@ -215,7 +279,7 @@ def F_motility(vertices, cells, km):
 
 # plt.plot([0, avg_angles[i,0]],[0,avg_angles[i,1]], color="k")
 
-# v = angle_2_vector(cell2.theta)
+# v = angle_2_vector(poly2.theta)
 # plt.plot([0,v[0]],[0,v[1]],color="k")
 # print avg_angles[i,:] / neighbor_count[i]
 # print magnitude(avg_angles[i,:] / neighbor_count

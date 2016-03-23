@@ -8,3 +8,9 @@ movie2/*
 move/
 todo
 motility*/
+aps.py
+*.sh
+data/
+noise/
+MSD.py
+plot_MSD.py

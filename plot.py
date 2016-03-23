@@ -30,7 +30,7 @@ def plot_network(vertices, cells, L, file):
 	fig = plt.figure()
 	ax = fig.add_subplot(1,1,1)
 	for x,y in vertices:
-		ax.scatter(x, y, c="c")
+		ax.scatter(x, y, c="m", marker=".", s=100)
 
 	for cell in cells:
 		indices = cell.indices
@@ -45,21 +45,26 @@ def plot_network(vertices, cells, L, file):
 			v2 = np.array((x2,y2))
 			v2 = v1 + periodic_diff(v2, v1, L)
 			x2,y2 = v2
-			ax.plot([x1,x2],[y1,y2],c="k")
+			ax.plot([x1,x2], [y1,y2], c="c")
 
 			v2 = np.array((x2,y2))
 			v1 = v2 + periodic_diff(v1, v2, L)
 			x1,y1 = v1
-			ax.plot([x1,x2],[y1,y2],c="k")
+			ax.plot([x1,x2], [y1,y2], c="c")
 
 
+		# # plot centers
+		# x,y = cell.get_center(vertices, L)
+		# plt.scatter(x,y,color="m", marker="*")
+
+	# remove axis ticks
+	ax.axes.get_xaxis().set_ticks([])
+	ax.axes.get_yaxis().set_ticks([])
 
 	ax.axis([0,L[0],0,L[1]])
 	plt.savefig(file)
 	plt.close(fig)
 	return
-
-
 
 def plot_edges(vertices, edges, L):
 	plt.cla()
@@ -82,9 +87,6 @@ def plot_edges(vertices, edges, L):
 	plt.axis([0,L[0],0,L[1]])
 	plt.show()
 	return
-
-
-
 
 
 # Plots to test T1 transition
@@ -123,7 +125,6 @@ def plot_10_edges(vertices, edges, L):
 		x1,y1 = vertices[edge[0]]
 		x2,y2 = vertices[edge[1]]
 		plt.plot([x1,x2],[y1,y2],color="k")
-
 	plt.show()
 	return
 

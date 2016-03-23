@@ -30,7 +30,7 @@ Farhadifar, R., Röper, J.-C., Aigouy, B., Eaton, S. & Jülicher, F. The Influen
 | &Lambda; | line tension | | 
 | &Gamma; | contraction| |
 | l<sub>min</sub> | minimum bond length | positive float |
-| &delta; t| time step | small positive float | 
+| &Delta; t| time step | small positive float | 
 
 # Input
 

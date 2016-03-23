@@ -14,7 +14,7 @@ transition.py - implements T1 transition for short bond lengths
 author: Lexi Signoriello
 date: 2/12/16
 
-4 cells involved in transition are 1-4 counter-clockwise order
+4 polys involved in transition are 1-4 counter-clockwise order
 
 Cells defined such that:
 Cell 0: i4, i1, i2, i5
@@ -40,45 +40,45 @@ Edge 9: i6 - i2
 
 
 
-def get_6_indices(cells, i1, i2, cell_ids):
-	cells_copy = []
-	for i in cell_ids:
-		cell = copy.deepcopy(cells[i])
-		cells_copy.append(cell)
+def get_6_indices(polys, i1, i2, poly_ids):
+	polys_copy = []
+	for i in poly_ids:
+		poly = copy.deepcopy(polys[i])
+		polys_copy.append(poly)
 
-	# define cells
-	cell_0 = cells_copy[0]
-	cell_1 = cells_copy[1]
-	cell_2 = cells_copy[2]
-	cell_3 = cells_copy[3]
+	# define polys
+	poly_0 = polys_copy[0]
+	poly_1 = polys_copy[1]
+	poly_2 = polys_copy[2]
+	poly_3 = polys_copy[3]
 
 	# Find indices wrt Cell 1
-	pos = int(np.where(cell_1.indices == i1)[0])
-	# i3: cell 1 before i1
+	pos = int(np.where(poly_1.indices == i1)[0])
+	# i3: poly 1 before i1
 	if pos == 0:
-		i_left = len(cell_1.indices) - 1
+		i_left = len(poly_1.indices) - 1
 	else:
 		i_left = pos - 1
-	i3 = cell_1.indices[i_left]
-	# i4: cell 1 after i1
-	if pos == len(cell_1.indices) - 1:
+	i3 = poly_1.indices[i_left]
+	# i4: poly 1 after i1
+	if pos == len(poly_1.indices) - 1:
 		i_right = 0
 	else:
 		i_right = pos + 1
-	i4 = cell_1.indices[i_right]
-	# i5: cell 3 before i2
-	pos = int(np.where(cell_3.indices == i2)[0])
+	i4 = poly_1.indices[i_right]
+	# i5: poly 3 before i2
+	pos = int(np.where(poly_3.indices == i2)[0])
 	if pos == 0:
-		i_left = len(cell_3.indices) - 1
+		i_left = len(poly_3.indices) - 1
 	else: 
 		i_left = pos - 1
-	i5 = cell_3.indices[i_left]
-	# i6: cell 3 after i2
-	if pos == len(cell_3.indices) - 1:
+	i5 = poly_3.indices[i_left]
+	# i6: poly 3 after i2
+	if pos == len(poly_3.indices) - 1:
 		i_right = 0
 	else:
 		i_right = pos + 1
-	i6 = cell_3.indices[i_right]
+	i6 = poly_3.indices[i_right]
 
 	indices = [i1,i2,i3,i4,i5,i6]
 
@@ -86,21 +86,21 @@ def get_6_indices(cells, i1, i2, cell_ids):
 
 
 
-# get cells and edges associated with short bond length
-def T1_0(cells, i1, i2, cell_ids, indices):
-	cells_0 = []
+# get polys and edges associated with short bond length
+def T1_0(polys, i1, i2, poly_ids, indices):
+	polys_0 = []
 
-	for i in cell_ids:
-		# copy cell so it can be manipulated without changing
+	for i in poly_ids:
+		# copy poly so it can be manipulated without changing
 		# current configuation
-		cell = copy.deepcopy(cells[i])
-		cells_0.append(cell)
+		poly = copy.deepcopy(polys[i])
+		polys_0.append(poly)
 
-	# define cells
-	cell_0 = cells_0[0]
-	cell_1 = cells_0[1]
-	cell_2 = cells_0[2]
-	cell_3 = cells_0[3]
+	# define polys
+	poly_0 = polys_0[0]
+	poly_1 = polys_0[1]
+	poly_2 = polys_0[2]
+	poly_3 = polys_0[3]
 
 	i1 = indices[0]
 	i2 = indices[1]
@@ -150,23 +150,23 @@ def T1_0(cells, i1, i2, cell_ids, indices):
 	edges_0[9,0] = i6
 	edges_0[9,1] = i2
 
-	return cells_0, edges_0
+	return polys_0, edges_0
 
-# get cells and edges associated with 
-def T1_left(cells, i1, i2, cell_ids, indices):
+# get polys and edges associated with 
+def T1_left(polys, i1, i2, poly_ids, indices):
 
 	# Cells
-	cells_l = []
+	polys_l = []
 	# ids in correct order already
-	for i in cell_ids:
-		cell = copy.deepcopy(cells[i])
-		cells_l.append(cell)
+	for i in poly_ids:
+		poly = copy.deepcopy(polys[i])
+		polys_l.append(poly)
 
-	# define cells
-	cell_0 = cells_l[0]
-	cell_1 = cells_l[1]
-	cell_2 = cells_l[2]
-	cell_3 = cells_l[3]
+	# define polys
+	poly_0 = polys_l[0]
+	poly_1 = polys_l[1]
+	poly_2 = polys_l[2]
+	poly_3 = polys_l[3]
 
 	# define indices
 	i1 = indices[0]
@@ -177,29 +177,29 @@ def T1_left(cells, i1, i2, cell_ids, indices):
 	i6 = indices[5]
 
 	# Cell 0: remove i2
-	pos = int(np.where(cell_0.indices == i2)[0])
-	indices = np.delete(cell_0.indices, pos)
-	cells_l[0].indices = indices
+	pos = int(np.where(poly_0.indices == i2)[0])
+	indices = np.delete(poly_0.indices, pos)
+	polys_l[0].indices = indices
 
 
 	# Cell 1: insert i2 before i1 
-	pos = int(np.where(cell_1.indices == i1)[0])
-	left_indices = cell_1.indices[:pos]
-	right_indices = cell_1.indices[pos:]
+	pos = int(np.where(poly_1.indices == i1)[0])
+	left_indices = poly_1.indices[:pos]
+	right_indices = poly_1.indices[pos:]
 	indices = np.concatenate((left_indices, [i2], right_indices))
-	cells_l[1].indices = indices
+	polys_l[1].indices = indices
 
 	# Cell 2: remove i1
-	pos = int(np.where(cell_2.indices == i1)[0])
-	indices = np.delete(cell_2.indices, pos)
-	cells_l[2].indices = indices
+	pos = int(np.where(poly_2.indices == i1)[0])
+	indices = np.delete(poly_2.indices, pos)
+	polys_l[2].indices = indices
 
 	# Cell 3: insert i1 before i2
-	pos = int(np.where(cell_3.indices == i2)[0])
-	left_indices = cell_3.indices[:pos]
-	right_indices = cell_3.indices[pos:]
+	pos = int(np.where(poly_3.indices == i2)[0])
+	left_indices = poly_3.indices[:pos]
+	right_indices = poly_3.indices[pos:]
 	indices = np.concatenate((left_indices, [i1], right_indices))
-	cells_l[3].indices = indices
+	polys_l[3].indices = indices
 
 
 	# Edges
@@ -245,20 +245,20 @@ def T1_left(cells, i1, i2, cell_ids, indices):
 	edges_l[9,1] = i2
 
 
-	return cells_l, edges_l
+	return polys_l, edges_l
 
-def T1_right(cells, i1, i2, cell_ids, indices):
+def T1_right(polys, i1, i2, poly_ids, indices):
 
-	cells_r = []
-	for i in cell_ids:
-		cell = copy.deepcopy(cells[i])
-		cells_r.append(cell)
+	polys_r = []
+	for i in poly_ids:
+		poly = copy.deepcopy(polys[i])
+		polys_r.append(poly)
 
-	# define cells
-	cell_0 = cells_r[0]
-	cell_1 = cells_r[1]
-	cell_2 = cells_r[2]
-	cell_3 = cells_r[3]
+	# define polys
+	poly_0 = polys_r[0]
+	poly_1 = polys_r[1]
+	poly_2 = polys_r[2]
+	poly_3 = polys_r[3]
 
 	# define indices
 	i1 = indices[0]
@@ -269,29 +269,29 @@ def T1_right(cells, i1, i2, cell_ids, indices):
 	i6 = indices[5]
 
 	# Cell 0: remove i1
-	pos = int(np.where(cell_0.indices == i1)[0])
-	indices = np.delete(cell_0.indices, pos)
-	cells_r[0].indices = indices
+	pos = int(np.where(poly_0.indices == i1)[0])
+	indices = np.delete(poly_0.indices, pos)
+	polys_r[0].indices = indices
 
 
 	# Cell 1: insert i2 after i1
-	pos = int(np.where(cell_1.indices == i1)[0])
-	left_indices = cell_1.indices[:pos+1]
-	right_indices = cell_1.indices[pos+1:]
+	pos = int(np.where(poly_1.indices == i1)[0])
+	left_indices = poly_1.indices[:pos+1]
+	right_indices = poly_1.indices[pos+1:]
 	indices = np.concatenate((left_indices, [i2], right_indices))
-	cells_r[1].indices = indices
+	polys_r[1].indices = indices
 
 	# Cell 2: remove i2
-	pos = int(np.where(cell_2.indices == i2)[0])
-	indices = np.delete(cell_2.indices, pos)
-	cells_r[2].indices = indices
+	pos = int(np.where(poly_2.indices == i2)[0])
+	indices = np.delete(poly_2.indices, pos)
+	polys_r[2].indices = indices
 
 	# Cell 3: insert i1 after i2
-	pos = int(np.where(cell_3.indices == i2)[0])
-	left_indices = cell_3.indices[:pos+1]
-	right_indices = cell_3.indices[pos+1:]
+	pos = int(np.where(poly_3.indices == i2)[0])
+	left_indices = poly_3.indices[:pos+1]
+	right_indices = poly_3.indices[pos+1:]
 	indices = np.concatenate((left_indices, [i1], right_indices))
-	cells_r[3].indices = indices 
+	polys_r[3].indices = indices 
 
 	# # Edges
 	edges_r = np.zeros((10,2))
@@ -336,50 +336,55 @@ def T1_right(cells, i1, i2, cell_ids, indices):
 	edges_r[9,1] = i1
 
 
-	return cells_r, edges_r
+	return polys_r, edges_r
 
 
-# # find 4 cells involved with 2 vertices
-# Labeled cells 0-3 in counter-clockwise order
+# # find 4 polys involved with 2 vertices
+# Labeled polys 0-3 in counter-clockwise order
 # Cell 0 and Cell 3 are neighbors
-def get_4_cells(cells, i1, i2):
+def get_4_polys(polys, i1, i2):
 
-	cell_ids = np.zeros(4).astype(int)
-	cell_ids.fill(-1) # catch errors later
+	poly_ids = np.zeros(4).astype(int)
+	poly_ids.fill(-1) # catch errors later
 
-	for cell in cells:
+	for poly in polys:
 		# Cell 0 or Cell 2
-		# Current neighboring cells
+		# Current neighboring polys
 		# Cell 1 should have i1 before i2 in counter-clockwise orde
-		if i1 in cell.indices and i2 in cell.indices:
-			pos1 = np.where(cell.indices == i1)
-			pos2 = np.where(cell.indices == i2)
+		if i1 in poly.indices and i2 in poly.indices:
+			pos1 = np.where(poly.indices == i1)
+			pos2 = np.where(poly.indices == i2)
 
-			if pos1 == len(cell.indices) - 1:
+			if pos1 == len(poly.indices) - 1:
 				pos1 = -1
-			if pos2 == len(cell.indices) - 1:
+			if pos2 == len(poly.indices) - 1:
 				pos2 = -1
 
 			# if Cell 1: i1 is before i2
 			if pos1 < pos2:
-				cell_ids[0] = cell.id
+				poly_ids[0] = poly.id
 			# if Cell 3: i2 is before i1
 			if pos2 < pos1:
-				cell_ids[2] = cell.id
+				poly_ids[2] = poly.id
 		
 		# Cell 3
-		if i2 in cell.indices and i1 not in cell.indices:
-			cell_ids[3] = cell.id
+		if i2 in poly.indices and i1 not in poly.indices:
+			poly_ids[3] = poly.id
 		# Cell 1
-		if i1 in cell.indices and i2 not in cell.indices:
-			cell_ids[1] = cell.id
+		if i1 in poly.indices and i2 not in poly.indices:
+			poly_ids[1] = poly.id
 
-	return cell_ids
+	return poly_ids
 	
 
 
-def T1_transition(network, vertices, cells, edges, min_dist):
-	L = network.L
+def T1_transition(vertices, polys, edges, parameters):
+	
+
+	lx = parameters['lx']
+	ly = parameters['ly']
+	L = np.array([lx,ly])
+	lmin = parameters['lmin']
 
 	for edge in edges:
 		i1 = edge[0]
@@ -391,28 +396,28 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 
 		dist = euclidean_distance(v1[0], v1[1], v2[0], v2[1])
 
-		if dist < min_dist:
+		if dist < lmin:
 			# print "T1", i1, i2, dist
-			cell_ids = get_4_cells(cells, i1, i2)
-			if -1 in cell_ids:
+			poly_ids = get_4_polys(polys, i1, i2)
+			if -1 in poly_ids:
 				pass
 			else:
 				# find minimum configuration
 
 				# 6 indices for vertices involved in transition
-				indices = get_6_indices(cells, i1, i2, cell_ids)
+				indices = get_6_indices(polys, i1, i2, poly_ids)
 
 				# original configuration
-				cells_0, edges_0 = T1_0(cells, i1, i2, cell_ids, indices)
-				E0 = network.get_energy(vertices, cells_0, edges_0)
+				polys_0, edges_0 = T1_0(polys, i1, i2, poly_ids, indices)
+				E0 = get_energy(vertices, polys_0, edges_0, parameters)
 
 				# left T1 transition 
-				cells_l, edges_l = T1_left(cells, i1, i2, cell_ids, indices)
-				E_left = network.get_energy(vertices, cells_l, edges_l)
+				polys_l, edges_l = T1_left(polys, i1, i2, poly_ids, indices)
+				E_left = get_energy(vertices, polys_l, edges_l, parameters)
 
 				# # right T1 transition
-				cells_r, edges_r = T1_right(cells, i1, i2, cell_ids, indices)
-				E_right = network.get_energy(vertices, cells_r, edges_r)
+				polys_r, edges_r = T1_right(polys, i1, i2, poly_ids, indices)
+				E_right = get_energy(vertices, polys_r, edges_r, parameters)
 
 
 				# get minimum
@@ -423,19 +428,19 @@ def T1_transition(network, vertices, cells, edges, min_dist):
 					pass
 
 				if min_i == 1:
-					set_T1_left(cells, cells_l, cell_ids, edges, indices)
+					set_T1_left(polys, polys_l, poly_ids, edges, indices)
 
 				if min_i == 2:
-					set_T1_right(cells, cells_r, cell_ids, edges, indices)
+					set_T1_right(polys, polys_r, poly_ids, edges, indices)
 
 
-	return cells, edges
+	return polys, edges
 
 
-def set_T1_left(cells, cells_l, cell_ids, edges, indices):
-	# set new cell indices
-	for i,cell in enumerate(cells_l):
-		cells[cell_ids[i]].indices = cell.indices
+def set_T1_left(polys, polys_l, poly_ids, edges, indices):
+	# set new poly indices
+	for i,poly in enumerate(polys_l):
+		polys[poly_ids[i]].indices = poly.indices
 
 	# set new edges
 	i1 = indices[0]
@@ -463,11 +468,11 @@ def set_T1_left(cells, cells_l, cell_ids, edges, indices):
 	return 
 
 
-def set_T1_right(cells, cells_r, cell_ids, edges, indices):
+def set_T1_right(polys, polys_r, poly_ids, edges, indices):
 
-	# set new cell indices
-	for i,cell in enumerate(cells_r):
-		cells[cell_ids[i]].indices = cell.indices
+	# set new poly indices
+	for i,poly in enumerate(polys_r):
+		polys[poly_ids[i]].indices = poly.indices
 	
 
 	# set new edges
@@ -499,7 +504,8 @@ def set_T1_right(cells, cells_r, cell_ids, edges, indices):
 
 
 
-
+def T2_transition(network, vertices, polys, edges, min_area):
+	pass
 
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from Cell import Cell
+from Polygon import Polygon
 
 """
 
@@ -40,42 +40,28 @@ def read_cells(cell_file):
 	f.close()
 	return xs, ys, areas, perims
 
-def read_cell_indices(file):
+
+def read_poly_indices(file):
 	# indices = np.loadtxt(file, dtype=int)
 	indices = []
 	f = open(file)
 	for line in f:
-		cell_indices = []
+		poly_indices = []
 		linesplit = line.strip().split("\t")
 		for i in linesplit:
-			cell_indices.append(int(i))
-		indices.append(cell_indices)
+			poly_indices.append(int(i))
+		indices.append(poly_indices)
 	f.close()
 	return indices
 
-def write_cell_indices(cells, file):
-	f = open(file, "w+")
-	for cell in cells:
-		for i in cell.indices:
-			f.write("%d\t" % i)
-		f.write("\n")
-	f.close()
-	return 
 
-def build_cells(cell_indices, A0, P0, theta):
-	cells = []
+def build_polygons(cell_indices, A0):
+	polys = []
 	for i,indices in enumerate(cell_indices):
-		cell = Cell(i, indices, A0, P0, theta)
-		cells.append(cell)
-	return cells
+		poly = Polygon(i, indices, A0)
+		polys.append(poly)
+	return polys
 
-def write_cells(cells, file):
-	f = open(file,"w+")
-	for cell in cells:
-		f.write("%f\t%f\t%f\t%f\n" % (cell.x, cell.y, 
-									cell.area, cell.perim))
-	f.close()
-	return
 
 def read_vertices(file):
 	vertices = np.loadtxt(file)
@@ -103,15 +89,25 @@ def read_edges(file):
 
 
 
-# old edge parser 
-# edges0 = np.loadtxt(file).astype(int)
-# edges = np.zeros((len(edges0)*3, 2)).astype(int)
-# counter = 0
-# for i,edge in enumerate(edges0):
-# 	for j in edge:
-# 		# print i, j
-# 		edges[counter, 0] = i
-# 		edges[counter, 1] = j
-# 		counter += 1
-# np.savetxt("edges.txt", edges, fmt="%d")
-# exit()
+
+
+
+
+
+# def write_cell_indices(cells, file):
+# 	f = open(file, "w+")
+# 	for cell in cells:
+# 		for i in cell.indices:
+# 			f.write("%d\t" % i)
+# 		f.write("\n")
+# 	f.close()
+# 	return 
+
+
+# def write_cells(cells, file):
+# 	f = open(file,"w+")
+# 	for cell in cells:
+# 		f.write("%f\t%f\t%f\t%f\n" % (cell.x, cell.y, 
+# 									cell.area, cell.perim))
+# 	f.close()
+# 	return
