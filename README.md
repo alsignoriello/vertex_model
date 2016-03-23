@@ -9,7 +9,7 @@ E = 0.5 &Sigma;<sub>&alpha;</sub> K<sub>&alpha;</sub> (A<sub> &alpha; </sub> - A
 
 where A is the area and P is the perimeter. 
 
-F = - &#8407;&nabla; <sub>i</sub>E<sub>i</sub>
+F&#8407;<sub>i</sub> = - &#8407;&nabla; <sub>i</sub>E<sub>i</sub>
 
 
 The terms represent cell elasticity, line tension and contraction, respectively. 
