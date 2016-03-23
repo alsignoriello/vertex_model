@@ -19,7 +19,6 @@ The terms represent cell elasticity, line tension and contraction, respectively.
 Farhadifar, R., Röper, J.-C., Aigouy, B., Eaton, S. & Jülicher, F. The Influence of Cell Mechanics, Cell-Cell Interactions, and Proliferation on Epithelial Packing. Current Biology 17, 2095–2104 (2007).
 
 
-
 # Parameters
 
 
@@ -30,7 +29,8 @@ Farhadifar, R., Röper, J.-C., Aigouy, B., Eaton, S. & Jülicher, F. The Influen
 | k<sub>A</sub> | elasticity | |
 | &Lambda; | line tension | | 
 | &Gamma; | contraction| |
-
+| l<sub>min</sub> | minimum bond length | positive float |
+| &delta; t| time step | small positive float | 
 
 # Input
 
