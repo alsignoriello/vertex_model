@@ -1,16 +1,4 @@
-/venv_vertex/*
 *.txt
-T1_test/*
 *.jpg
-conjugate_gradient.py
-movie/*
-movie2/*
-move/
-todo
-motility*/
-aps.py
-*.sh
 data/
 noise/
-MSD.py
-plot_MSD.py
