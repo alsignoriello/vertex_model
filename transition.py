@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np 
-from Cell import Cell
+from Polygon import Polygon
 from geometry import periodic_diff
 from energy import *
 import copy

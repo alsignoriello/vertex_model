@@ -12,8 +12,9 @@ def steepest_descent(vertices, edges, polys, parameters):
 	t = 0.
 
 	count = 0
-	# while np.sum(forces**2)**(0.5) > epsilon:
-	while count < 1:
+	forces = 10**6
+	while np.sum(forces**2)**(0.5) > epsilon:
+	# while count < 1:
 
 		# get energy for network
 		energy = get_energy(vertices, polys, edges, parameters)
@@ -21,7 +22,7 @@ def steepest_descent(vertices, edges, polys, parameters):
 		
 		# get forces for network
 		forces = get_forces(vertices, polys, edges, parameters)
-		# print forces
+		print np.sum(forces**2)**(0.5)
 
 		count += 1
 
@@ -35,6 +36,8 @@ def steepest_descent(vertices, edges, polys, parameters):
 		# can be used for plotting routines later...
 	
 		t += delta_t
+
+	return 
 
 
 
