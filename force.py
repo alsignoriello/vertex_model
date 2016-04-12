@@ -58,8 +58,7 @@ def move_vertices(vertices, forces, parameters):
 			# wrap around to bottom
 			vertices[i,1] = y - ly
 
-		return vertices 
-
+	return vertices 
 
 
 def get_clockwise(index, indices, vertices, L):
@@ -201,97 +200,5 @@ def F_adhesion(vertices, edges, Lambda, L):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Force to move vertices of polys in particular direction
-# def F_motility(vertices, polys, km, xi):
-
-
-# 	n_vertices = len(vertices)
-# 	forces = np.zeros((n_vertices, 2))
-
-# 	# find neighbors for every poly
-# 	# defined as any two polys that share a vertex
-# 	avg_angles = np.zeros((len(polys), 2))
-# 	neighbor_count = np.ones(len(polys))
-
-# 	for i,poly in enumerate(polys):
-# 		avg_angles[i, :] += angle_2_vector(poly.theta)
-# 		for j,poly2 in enumerate(polys):
-# 			if i != j:
-# 				a = poly.indices
-# 				b = poly2.indices
-# 				if any(k in a for k in b) == True:
-# 					avg_angles[i, :] += angle_2_vector(poly2.theta)
-# 					neighbor_count[i] += 1
-
-# 	for i,poly in enumerate(polys):
-# 		# noise variable
-# 		nx = np.random.uniform(-pi,pi)
-# 		ny = np.random.uniform(-pi,pi)
-# 		n = np.array([nx,ny])
-	
-# 		# average all of the unit vectors for angles 
-# 		avg = (avg_angles[i,:] / neighbor_count[i])
-	
-# 		# add this force direction for every vertex in current poly
-# 		for index in poly.indices:
-# 			forces[index, :] += km * (avg + xi * n)
-	
-# 		# theta = avg + xi * noise
-# 		poly.theta = vector_2_angle(avg[0] + xi * n[0], avg[1] + xi * n[1])
-# 	return -forces
-
-
-
-
-
-
-
-
-
-
-
-
-
-# visualization for average vector
-
-# plt.plot([0, avg_angles[i,0]],[0,avg_angles[i,1]], color="k")
-
-# v = angle_2_vector(poly2.theta)
-# plt.plot([0,v[0]],[0,v[1]],color="k")
-# print avg_angles[i,:] / neighbor_count[i]
-# print magnitude(avg_angles[i,:] / neighbor_count
-
-# v_avg = avg_angles[i,:] / neighbor_count[i]
-# print magnitude(v_avg)
-# print vector_2_angle(v_avg[0], v_avg[1])
-# plt.plot([0,v_avg[0]],[0,v_avg[1]],color="m")
-# v_avg_unit = unit_vector(v_avg, np.array([0,0]))
-# plt.plot([0,v_avg_unit[0]],[0,v_avg_unit[1]],color="g")
-# plt.plot([0,v_avg[0]],[0,v_avg[1]],color="m")
-# plt.show()
-# exit()
 
 

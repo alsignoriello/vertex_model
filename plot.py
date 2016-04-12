@@ -25,15 +25,15 @@ options:
 """
 
 
-def plot_network(vertices, cells, L, file):
+def plot_network(vertices, poly, L, file):
 	plt.cla()
 	fig = plt.figure()
 	ax = fig.add_subplot(1,1,1)
-	for x,y in vertices:
-		ax.scatter(x, y, c="m", marker=".", s=100)
+	# for x,y in vertices:
+	# 	ax.scatter(x, y, c="m", marker=".", s=100)
 
-	for cell in cells:
-		indices = cell.indices
+	for poly in poly:
+		indices = poly.indices
 		for i,index in enumerate(indices):
 			x1,y1 = vertices[index]
 			if i == len(indices) - 1:
@@ -54,8 +54,17 @@ def plot_network(vertices, cells, L, file):
 
 
 		# # plot centers
-		# x,y = cell.get_center(vertices, L)
-		# plt.scatter(x,y,color="m", marker="*")
+		x,y = poly.get_center(vertices, L)
+		if x <= 0:
+			x = x + L[0]
+		if x >= L[0]:
+			x = x - L[0]
+		if y <= 0:
+			y = y + L[1]
+		if y >= L[1]:
+			y = y - L[1]
+		
+		plt.scatter(x,y,color="c", marker=".")
 
 	# remove axis ticks
 	ax.axes.get_xaxis().set_ticks([])
@@ -89,44 +98,44 @@ def plot_edges(vertices, edges, L):
 	return
 
 
-# Plots to test T1 transition
-def plot_4_cells(vertices, cells, i1, i2, L, file, E):
-	plt.cla()
-	x1,y1 = vertices[i1]
-	x2,y2 = vertices[i2]
-	plt.scatter(x1,y1,color="r",marker="*")
-	plt.scatter(x2,y2,color="m",marker="*")
+# # Plots to test T1 transition
+# def plot_4_poly(vertices, poly, i1, i2, L, file, E):
+# 	plt.cla()
+# 	x1,y1 = vertices[i1]
+# 	x2,y2 = vertices[i2]
+# 	plt.scatter(x1,y1,color="r",marker="*")
+# 	plt.scatter(x2,y2,color="m",marker="*")
 
-	colors = ["c", "r", "g", "m"]
-	for i,cell in enumerate(cells):
-		indices = cell.indices
-		for e1,e2 in zip(indices,np.concatenate((indices[1:],[indices[0]]))):
-			x1,y1 = vertices[e1]
-			x2,y2 = vertices[e2]
-			plt.plot([x1,x2], [y1,y2], color=colors[i])
+# 	colors = ["c", "r", "g", "m"]
+# 	for i,cell in enumerate(cells):
+# 		indices = cell.indices
+# 		for e1,e2 in zip(indices,np.concatenate((indices[1:],[indices[0]]))):
+# 			x1,y1 = vertices[e1]
+# 			x2,y2 = vertices[e2]
+# 			plt.plot([x1,x2], [y1,y2], color=colors[i])
 
-	plt.axis([0,L[0]+0.2,0,L[1]+0.2])
-	plt.title("Energy = %f" % E)
-	plt.savefig(file)
-	return
+# 	plt.axis([0,L[0]+0.2,0,L[1]+0.2])
+# 	plt.title("Energy = %f" % E)
+# 	plt.savefig(file)
+# 	return
 
-def plot_6_indices(vertices, indices):
-	colors = ["c", "r", "g", "m", "k", "b"]
-	print indices
-	for i,index in enumerate(indices):
-		x,y = vertices[index]
-		plt.scatter(x,y,color=colors[i],marker="*")
-	plt.show()
-	return 
+# def plot_6_indices(vertices, indices):
+# 	colors = ["c", "r", "g", "m", "k", "b"]
+# 	print indices
+# 	for i,index in enumerate(indices):
+# 		x,y = vertices[index]
+# 		plt.scatter(x,y,color=colors[i],marker="*")
+# 	plt.show()
+# 	return 
 
-def plot_10_edges(vertices, edges, L):
+# def plot_10_edges(vertices, edges, L):
 
-	for edge in edges:
-		x1,y1 = vertices[edge[0]]
-		x2,y2 = vertices[edge[1]]
-		plt.plot([x1,x2],[y1,y2],color="k")
-	plt.show()
-	return
+# 	for edge in edges:
+# 		x1,y1 = vertices[edge[0]]
+# 		x2,y2 = vertices[edge[1]]
+# 		plt.plot([x1,x2],[y1,y2],color="k")
+# 	plt.show()
+# 	return
 
 
 

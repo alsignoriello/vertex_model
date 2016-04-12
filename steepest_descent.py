@@ -3,28 +3,30 @@ import numpy as np
 from energy import get_energy
 from force import get_forces, move_vertices
 from transition import T1_transition
+from plot import plot_network
 
-
-def steepest_descent(vertices, edges, polys, parameters):
+def steepest_descent(vertices, edges, polys, parameters, folder):
 
 	epsilon = 10**-6
 	delta_t = parameters['delta_t']
+	lx = parameters['lx']
+	ly = parameters['ly']
+	L = np.array([lx,ly])
 	t = 0.
 
-	count = 0
+	energylist = []
+
 	forces = 10**6
 	while np.sum(forces**2)**(0.5) > epsilon:
-	# while count < 1:
 
 		# get energy for network
 		energy = get_energy(vertices, polys, edges, parameters)
-		# print energy		
+		energylist.append(energy)	
+
 		
 		# get forces for network
 		forces = get_forces(vertices, polys, edges, parameters)
 		print np.sum(forces**2)**(0.5)
-
-		count += 1
 
 		# move vertices
 		vertices = move_vertices(vertices, forces, parameters)
@@ -32,9 +34,8 @@ def steepest_descent(vertices, edges, polys, parameters):
 		# check for T1 transitions
 		cells, edges = T1_transition(vertices, polys, edges, parameters)
 
-		# add routine to write vertices, energy, forces at every time step
-		# can be used for plotting routines later...
-	
+		# plot_network(vertices, polys, L, "%s/%.2f.jpg" % (folder,t))
+
 		t += delta_t
 
 	return 
